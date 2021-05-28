@@ -2,21 +2,66 @@ const { createApp, ref, reactive, computed, watch, onMounted, watchEffect, onBef
 const { useQuasar, Loading, QSpinnerGears } = Quasar;
 
 var vueObject = {
-  name: "global",
+  name: "root",
   template:
   /*html*/
   `
-  <p>{{first}}</p>
-  <input v-model='first'>
+  <!-- select payment method -->
+  <div class="q-pa-md fit row justify-center">
+    <div class="q-gutter-y-xs">
+      <q-btn-toggle
+        spread
+        v-model = "paymentMethod.val"
+        toggle-color = "primary"
+        :options= "paymentMethodOptions"
+      />
+
+      <q-btn-toggle
+        spread
+        v-model = "paymentType.val"
+        toggle-color = "positive"
+        :options= "paymentTypeOptions"
+      />
+
+      <q-btn-toggle v-show="showplace"
+        spread
+        v-model = "place.val"
+        toggle-color = "accent"
+        :options= "placeOptions"
+      />
+
+    </div>
+  </div>
+
+  <div v-show='show' class='text-caption'>
+    model: {{model}}
+  </div>
   `
   ,
-  methods: {
+  setup() {
+    var paymentMethod = ref(model.paymentMethod)
 
-  },
-  setup(){
-    var first = ref('h');
-    return{
-      first
+    // watch(paymentMethod.value, (val) =>{
+    //   console.log(val)
+    //   val.val = 'vdnh' ? showplace=true : showplace=false 
+    // })
+
+    // var showplace = ref(toggelPaymentMethod(paymentMethod))
+
+    // var showplace = ref(computed(() => { return toggelPaymentMethod(paymentMethod) }));
+    var showplace = ref(computed(() => { return paymentMethod.value.val == 'cash' ? true : false }));
+
+    return {
+      show: false,
+      // show: true,
+      model: ref(model),
+      paymentMethod,
+      paymentMethodOptions: ref(model.paymentMethodOptions),
+      paymentType: ref(model.paymentType),
+      paymentTypeOptions: ref(model.paymentTypeOptions),
+      place: ref(model.place),
+      placeOptions: ref(model.placeOptions),
+      showplace,
     }
   }
 }
