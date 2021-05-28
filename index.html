@@ -10,6 +10,7 @@
 </head>
 <body>
   <div id="fin-app">
+    {{first}}
 
   </div>
   <script>
@@ -24,6 +25,12 @@
 
   <!-- Import JS -->
   <script src="./data.js"></script>
+
+  <!-- Import components -->
+  <script src="./global.js"></script>
+  
+  <!-- Mount app -->
+  <script>const vm = app.mount('#fin-app')</script>
 
 </body>
 </html>
