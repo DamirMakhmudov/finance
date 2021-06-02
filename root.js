@@ -8,6 +8,8 @@ var vueObject = {
   `
   <!-- select payment method -->
   <div class="q-pa-md fit row justify-center">
+
+    
     <div class="q-gutter-y-xs">
       <q-btn-toggle
         spread
@@ -23,14 +25,20 @@ var vueObject = {
         :options= "paymentTypeOptions"
       />
 
-      <q-btn-toggle v-show="showplace"
+      <q-btn-toggle v-if="showplace"
         spread
         v-model = "place.val"
         toggle-color = "accent"
         :options= "placeOptions"
       />
+    </div>
+
+    <!-- address -->
+    <div id="q-gutter-y-xs">
 
     </div>
+
+    
   </div>
 
   <div v-show='show' class='text-caption'>
