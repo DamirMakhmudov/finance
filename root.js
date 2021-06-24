@@ -13,17 +13,18 @@ var vueObject = {
 
       <q-btn-toggle
         spread
-        v-model = "paymentMethod.val"
-        toggle-color = "primary"
-        :options= "paymentMethodOptions"
-        v-on:click="showplaceFn();showaddressFn()"
+        v-model = "paymentType.val"
+        toggle-color = "positive"
+        :options= "paymentTypeOptions"
+        v-on:click="showaddressFn()"
       />
 
       <q-btn-toggle
         spread
-        v-model = "paymentType.val"
-        toggle-color = "positive"
-        :options= "paymentTypeOptions"
+        v-model = "paymentMethod.val"
+        toggle-color = "primary"
+        :options= "paymentMethodOptions"
+        v-on:click="showplaceFn()"
       />
 
       <q-btn-toggle v-if="showplace"
@@ -49,7 +50,15 @@ var vueObject = {
       >
       </q-select>
 
-    <q-input v-model="text" label="Standard" />
+    <q-input
+      v-model="text"
+      label="Комментарий"
+
+      >
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+    </q-input>
     
   </div>
 
@@ -60,7 +69,8 @@ var vueObject = {
   `
   ,
   setup() {
-    const paymentMethod = ref(model.paymentMethod)
+    const paymentMethod = ref(model.paymentMethod);
+    const paymentType = ref(model.paymentType);
     const showplace = ref(false);
     const showaddress = ref(false);
     const addressOptions = ref(model.addressOptions);
@@ -83,7 +93,7 @@ var vueObject = {
     }
 
     function showaddressFn(){
-      showaddress.value = paymentMethod.value.val == 'cash' ? true : false;
+      showaddress.value = paymentType.value.val == 'income' ? true : false;
     }
 
     return {
@@ -93,7 +103,7 @@ var vueObject = {
 
       paymentMethod,
       paymentMethodOptions: ref(model.paymentMethodOptions),
-      paymentType: ref(model.paymentType),
+      paymentType,
       paymentTypeOptions: ref(model.paymentTypeOptions),
       place: ref(model.place),
       placeOptions: ref(model.placeOptions),
