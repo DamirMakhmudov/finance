@@ -37,31 +37,54 @@ var vueObject = {
     </div>
 
     <!-- address -->
-      <q-select
-        filled
-        v-model="address.val"
-        use-input
-        input-debounce="0"
-        label="Адрес"
-        :options="addressOptions"
-        @filter="filterFn"
-        behavior="menu"
-        v-if="showaddress"
-      >
-      </q-select>
+    <q-select
+      v-model="address.val"
+      use-input
+      input-debounce="0"
+      label="Адрес"
+      :options="addressOptions"
+      @filter="filterFn"
+      behavior="menu"
+      v-if="showaddress"
+    >
+      <template v-slot:prepend>
+        <q-icon name="location_on" />
+      </template>
 
+      <template v-slot:no-option>
+        <q-item>
+          <q-item-section class="text-grey">
+            Не нашел такого, ты уверен(а)?
+          </q-item-section>
+        </q-item>
+      </template>
+
+    </q-select>
+
+    <!-- comment -->
     <q-input
-      v-model="text"
+      v-model="comment.val"
       label="Комментарий"
-
-      >
-        <template v-slot:prepend>
-          <q-icon name="event" />
-        </template>
+    >
+      <template v-slot:prepend>
+        <q-icon name="chat" />
+      </template>
     </q-input>
     
+    <!-- sum -->
+    <q-input
+      v-model.number="sum.val"
+      label="Сумма"
+      type="number"
+    >
+      <template v-slot:prepend>
+        <q-icon name="price" />
+      </template>
+    </q-input>
+
   </div>
 
+  <!-- model -->
   <div v-show='show' class='text-caption'>
     <hr>
     model: {{model}}
@@ -112,6 +135,8 @@ var vueObject = {
       address: ref(model.address),
       addressOptions,
       showaddress,
+      comment: ref(model.comment),
+      sum: ref(model.sum),
       showaddressFn,
       filterFn
     }

@@ -1,19 +1,19 @@
 var model = {
-  paymentMethod: { val: "" },
+  paymentMethod: { 'val': "" },
 
   paymentMethodOptions: [
     { label: 'Нал', value: 'cash' },
     { label: 'Безнал', value: 'cashless' }
   ],
 
-  paymentType: { val: "" },
+  paymentType: { 'val': "" },
   
   paymentTypeOptions: [
     { label: 'Приход', value: 'income' },
     { label: 'Расход', value: 'outcome' }
   ],
 
-  place: { val: "" },
+  place: { 'val': "" },
   
   placeOptions: [
     { label: 'ВДНХ', value: 'vdnh' },
@@ -34,5 +34,10 @@ var model = {
     "г.Москва, ул.Академика Янгеля, д.1, корп.1, кв.145",
     "г.Москва, ул.Мантулинская, д.9, корп.6, кв. 59",
     "г.Москва, ул.Библиотечная, д.27, кв. 110"
-  ]
+  ],
+
+  comment: {'val':''},
+
+  sum: {'val':0}
+
 }
