@@ -38,6 +38,26 @@ var model = {
 
   comment: {'val':''},
 
-  sum: {'val':0}
+  sum: {'val':0},
+
+  consumption: {'val': ''},
+
+  consumptionOptions: [
+    {'label':'Бонусы менеджеры','needaddress':false},
+    {'label':'Отзывы','needaddress':false},
+    {'label':'ЗП','needaddress':false},
+    {'label':'Налоги','needaddress':false},
+    {'label':'Контекстная реклама','needaddress':true},
+    {'label':'Нужды офиса','needaddress':false},
+    {'label':'Дима','needaddress':false},
+    {'label':'Подрядчики для работы организации','needaddress':false},
+    {'label':'Другая реклама','needaddress':false},
+    {'label':'Аренда офиса','needaddress':false},
+    {'label':'Курьеры','needaddress':false},
+    {'label':'Для работы согласователей','needaddress':true},
+    {'label':'Телефония','needaddress':false},
+    {'label':'Оплата посреднику','needaddress':false},
+    {'label':'Рабочие расходы по объекту','needaddress':false}
+  ]
 
 }

@@ -16,7 +16,7 @@ var vueObject = {
         v-model = "paymentType.val"
         toggle-color = "positive"
         :options= "paymentTypeOptions"
-        v-on:click="showaddressFn()"
+        v-on:click="showaddressFn();showconsumptionFn()"
       />
 
       <q-btn-toggle
@@ -43,14 +43,13 @@ var vueObject = {
       input-debounce="0"
       label="Адрес"
       :options="addressOptions"
-      @filter="filterFn"
+      @filter="filteraddressFn"
       behavior="menu"
       v-if="showaddress"
     >
       <template v-slot:prepend>
         <q-icon name="location_on" />
       </template>
-
       <template v-slot:no-option>
         <q-item>
           <q-item-section class="text-grey">
@@ -58,13 +57,13 @@ var vueObject = {
           </q-item-section>
         </q-item>
       </template>
-
     </q-select>
 
     <!-- comment -->
     <q-input
       v-model="comment.val"
       label="Комментарий"
+      autogrow
     >
       <template v-slot:prepend>
         <q-icon name="chat" />
@@ -74,21 +73,39 @@ var vueObject = {
     <!-- sum -->
     <q-input
       v-model.number="sum.val"
-      label="Сумма"
+      label='Сумма'
       type="number"
     >
       <template v-slot:prepend>
-        <q-icon name="price" />
+        <q-icon :name="paymenticon"/>
       </template>
     </q-input>
 
+    <!-- consumption -->
+    <q-select
+      v-model="consumption.val"
+      use-input
+      input-debounce="0"
+      label="Тип расхода"
+      :options="consumptionOptions"
+      @filter="filterconsumptionFn"
+      behavior="menu"
+      v-if="showconsumption"
+    >
+      <template v-slot:prepend>
+        <q-icon name="list" />
+      </template>
+      <template v-slot:no-option>
+        <q-item>
+          <q-item-section class="text-grey">
+            Не нашел такого, ты уверен(а)?
+          </q-item-section>
+        </q-item>
+      </template>
+    </q-select>
+
   </div>
 
-  <!-- model -->
-  <div v-show='show' class='text-caption'>
-    <hr>
-    model: {{model}}
-  </div>
   `
   ,
   setup() {
@@ -97,13 +114,17 @@ var vueObject = {
     const showplace = ref(false);
     const showaddress = ref(false);
     const addressOptions = ref(model.addressOptions);
+    const paymenticon = ref('payments');
+    const consumption = ref(model.consumption);
+    const consumptionOptions = ref(model.consumptionOptions.map(item => item.label));
+    const showconsumption = ref(false);
 
-    function filterFn (val, update) {
+    function filteraddressFn (val, update) {
       if (val === '') {
         update(() => {
-          addressOptions.value = model.addressOptions
+          addressOptions.value = model.addressOptions;
         })
-        return
+        return;
       }
       update(() => {
         const needle = val.toLowerCase()
@@ -111,19 +132,39 @@ var vueObject = {
       })
     }
 
+    function filterconsumptionFn (val, update) {
+      if (val === '') {
+        update(() => {
+          consumptionOptions.value = model.consumptionOptions
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        consumptionOptions.value = model.consumptionOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+      })
+    }
+
     function showplaceFn(){
       showplace.value = paymentMethod.value.val == 'cash' ? true : false;
+      paymenticon.value = paymentMethod.value.val == 'cash' ? 'payments' : 'payment';
     }
 
     function showaddressFn(){
       showaddress.value = paymentType.value.val == 'income' ? true : false;
     }
 
-    return {
-      show: false,
-      // show: true,
-      model: ref(model),
+    function showconsumptionFn(){
+      showconsumption.value = paymentType.value.val == 'outcome' ? true : false;
+    }
 
+    watch(consumption.value, (val) => {
+      if(val.val){
+        showaddress.value = val.val.needaddress ? true : false
+      }
+    })
+
+    return {
       paymentMethod,
       paymentMethodOptions: ref(model.paymentMethodOptions),
       paymentType,
@@ -135,10 +176,16 @@ var vueObject = {
       address: ref(model.address),
       addressOptions,
       showaddress,
+      showaddressFn,
+      filteraddressFn,
       comment: ref(model.comment),
       sum: ref(model.sum),
-      showaddressFn,
-      filterFn
+      paymenticon,
+      consumption,
+      consumptionOptions,
+      showconsumption,
+      showconsumptionFn,
+      filterconsumptionFn
     }
   }
 }
