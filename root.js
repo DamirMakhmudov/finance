@@ -108,6 +108,18 @@ var vueObject = {
   </div>
   `
   ,
+  data(){
+    return{
+      somedata: 0
+    }
+  },
+  methods:{
+    appendRow(){
+      Object.keys(vm.$data).forEach(item=>{
+        
+      })
+    }
+  },
   setup() {
     const paymentMethod = ref(model.val.paymentMethod);
     const paymentType = ref(model.val.paymentType);
@@ -158,10 +170,13 @@ var vueObject = {
       showconsumption.value = paymentType.value.val == 'outcome' ? true : false;
     }
 
-    function appendRow() {
-      console.log('appendRow');
+    function appendRow2() {
+      console.log(somedata);
       // model.val = 'origin.val';
-      model.val.paymentMethod.val = 'cashlessпше '
+      // model.val.paymentMethod.val = ''
+      // console.log(paymentMethod.value.val);
+      // paymentMethod.value.val = '';
+      // console.log(paymentMethod.value.val);
       // Object.keys(model.val).forEach((item, idx)=>{
       //   if(model.val[item].hasOwnProperty('val')){
       //     model.val[item].val = origin.val[item].val
@@ -202,7 +217,7 @@ var vueObject = {
       showconsumption,
       showconsumptionFn,
       filterconsumptionFn,
-      appendRow
+      appendRow2
     }
   }
 }
