@@ -1,4 +1,4 @@
-var model = {"val":{
+var model = {
   paymentMethod: { 'val': "" },
 
   paymentMethodOptions: [
@@ -59,10 +59,9 @@ var model = {"val":{
     {'label':'Оплата посреднику','needaddress':false},
     {'label':'Рабочие расходы по объекту','needaddress':false}
   ]
-}
-}
+};
 
-var origin = {"val":{
+var origin = {
   paymentMethod: { 'val': "" },
 
   paymentMethodOptions: [
@@ -123,5 +122,4 @@ var origin = {"val":{
     {'label':'Оплата посреднику','needaddress':false},
     {'label':'Рабочие расходы по объекту','needaddress':false}
   ]
-}
 };

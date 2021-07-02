@@ -9,34 +9,31 @@ var vueObject = {
   <div class="q-pa-md fit column justify-center">
     <!-- first buttons -->
     <div class="q-gutter-y-xs" style="height:120px">
-      <q-btn-toggle
+    <q-btn-toggle
         spread
-        v-model = "paymentType.val"
+        v-model = "mega.paymentType.val"
         toggle-color = "positive"
-        :options= "paymentTypeOptions"
+        :options= "mega.paymentTypeOptions"
         v-on:click="showaddressFn();showconsumptionFn()"
       />
-
       <q-btn-toggle
         spread
-        v-model = "paymentMethod.val"
+        v-model = "mega.paymentMethod.val"
         toggle-color = "primary"
-        :options= "paymentMethodOptions"
+        :options= "mega.paymentMethodOptions"
         v-on:click="showplaceFn()"
       />
 
-      <q-btn-toggle v-if="showplace"
+      <q-btn-toggle v-if="mega.showplace"
         spread
-        v-model = "place.val"
+        v-model = "mega.place.val"
         toggle-color = "accent"
-        :options= "placeOptions"
+        :options= "mega.placeOptions"
       />
     </div>
-
     <div class="q-gutter-y-xs">
-      <!-- comment -->
       <q-input
-        v-model="comment.val"
+        v-model="mega.comment.val"
         label="Комментарий"
         autogrow
       >
@@ -45,27 +42,26 @@ var vueObject = {
         </template>
       </q-input>
     
-      <!-- sum -->
+
       <q-input
-        v-model.number="sum.val"
+        v-model.number="mega.sum.val"
         label='Сумма'
         type="number"
       >
         <template v-slot:prepend>
-          <q-icon :name="paymenticon"/>
+          <q-icon :name="mega.paymenticon"/>
         </template>
       </q-input>
 
-      <!-- consumption -->
       <q-select
-        v-model="consumption.val"
+        v-model="mega.consumption.val"
         use-input
         input-debounce="0"
         label="Тип расхода"
-        :options="consumptionOptions"
+        :options="mega.consumptionOptions"
         @filter="filterconsumptionFn"
         behavior="menu"
-        v-if="showconsumption"
+        v-if="mega.showconsumption"
       >
         <template v-slot:prepend>
           <q-icon name="list" />
@@ -79,16 +75,15 @@ var vueObject = {
         </template>
       </q-select>
 
-      <!-- address -->
       <q-select
-        v-model="address.val"
+        v-model="mega.address.val"
         use-input
         input-debounce="0"
         label="Адрес"
-        :options="addressOptions"
+        :options="mega.addressOptions"
         @filter="filteraddressFn"
         behavior="menu"
-        v-if="showaddress"
+        v-if="mega.showaddress"
       >
         <template v-slot:prepend>
           <q-icon name="location_on" />
@@ -102,84 +97,91 @@ var vueObject = {
         </template>
       </q-select>
       
-      <!-- save --> 
       <q-btn color="primary" label="Добавить" class="fit" @click="appendRow()"/>
     </div>
   </div>
   `
   ,
-  data(){
-    return{
-      somedata: 0
-    }
-  },
-  methods:{
-    appendRow(){
-      Object.keys(vm.$data).forEach(item=>{
-        
-      })
-    }
-  },
   setup() {
-    const paymentMethod = ref(model.val.paymentMethod);
-    const paymentType = ref(model.val.paymentType);
-    const showplace = ref(false);
-    const showaddress = ref(false);
-    const addressOptions = ref(model.val.addressOptions);
-    const paymenticon = ref('payments');
-    const consumption = ref(model.val.consumption);
-    const consumptionOptions = ref(model.val.consumptionOptions.map(item => item.label));
-    const showconsumption = ref(false);
+    // const paymentMethod = ref(model.paymentMethod);
+    // const paymentType = ref(model.paymentType);
+    // const showplace = ref(false);
+    // const showaddress = ref(false);
+    // const addressOptions = ref(model.addressOptions);
+    // const paymenticon = ref('payments');
+    // const consumption = ref(model.consumption);
+    // const consumptionOptions = ref(model.consumptionOptions.map(item => item.label));
+    // const showconsumption = ref(false);
     
+    const mega = reactive ({
+      paymentMethod : model.paymentMethod,
+      paymentMethodOptions: model.paymentMethodOptions,
+      paymentTypeOptions: model.paymentTypeOptions,
+      paymentType : model.paymentType,
+      place: model.placeOptions,
+      placeOptions: model.placeOptions,
+      address: model.address,
+      comment: model.comment,
+      sum: model.sum,
+      showplace : false,
+      showaddress : false,
+      addressOptions: model.addressOptions,
+      paymenticon : 'payments',
+      consumption : model.consumption,
+      consumptionOptions : model.consumptionOptions.map(item => item.label),
+      showconsumption : false
+    });
+
     function filteraddressFn(val, update) {
       if (val === '') {
         update(() => {
-          addressOptions.value = model.val.addressOptions;
+          mega.addressOptions = model.addressOptions;
         })
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        addressOptions.value = model.val.addressOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        mega.addressOptions = model.addressOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
       })
     }
 
     function filterconsumptionFn(val, update) {
       if (val === '') {
         update(() => {
-          consumptionOptions.value = model.val.consumptionOptions
+          mega.consumptionOptions = model.consumptionOptions
         });
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        consumptionOptions.value = model.val.consumptionOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+        mega.consumptionOptions = model.consumptionOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
       })
     }
 
     function showplaceFn() {
-      showplace.value = paymentMethod.value.val == 'cash' ? true : false;
-      paymenticon.value = paymentMethod.value.val == 'cash' ? 'payments' : 'payment';
+      console.log(mega.paymentMethod.val)
+      // mega.showplace = mega.paymentMethod.val == 'cash' ? true : false;
+      mega.paymenticon = mega.paymentMethod.val == 'cash' ? 'payments' : 'payment';
     }
 
     function showaddressFn() {
-      showaddress.value = paymentType.value.val == 'income' ? true : false;
+      mega.showaddress= mega.paymentType.val == 'income' ? true : false;
     }
 
     function showconsumptionFn() {
-      showconsumption.value = paymentType.value.val == 'outcome' ? true : false;
+      mega.showconsumption = mega.paymentType.val == 'outcome' ? true : false;
     }
 
     function appendRow2() {
       console.log(somedata);
-      // model.val = 'origin.val';
-      // model.val.paymentMethod.val = ''
+      // model = 'origin.val';
+      // model.paymentMethod.val = ''
       // console.log(paymentMethod.value.val);
       // paymentMethod.value.val = '';
       // console.log(paymentMethod.value.val);
-      // Object.keys(model.val).forEach((item, idx)=>{
-      //   if(model.val[item].hasOwnProperty('val')){
-      //     model.val[item].val = origin.val[item].val
+      // Object.keys(model).forEach((item, idx)=>{
+      //   if(model[item].hasOwnProperty('val')){
+      //     model[item].val = origin.val[item].val
       //   }
       // })
       // vm.$forceUpdate();
@@ -189,32 +191,49 @@ var vueObject = {
       // location.reload();
     }
 
-    watch(consumption.value, (val) => {
-      if (val.val) {
-        showaddress.value = val.val.needaddress ? true : false
+    //  watch(mega.consumption.value, (val) => {
+    //   if (val.val) {
+    //     showaddress.value = val.val.needaddress ? true : false
+    //   }
+    // })
+
+    // watch(mega.consumption.value, (val) => {
+    //   if (val.val) {
+    //     showaddress.value = val.val.needaddress ? true : false
+    //   }
+    // })
+
+    watch(
+      () => mega.consumption,
+      (count, prevCount) => {
+        console.log(count)
+        if (count.val) {
+          mega.showaddress.value = count.val.needaddress ? true : false
+        }
       }
-    })
+    )
 
     return {
-      paymentMethod,
-      paymentMethodOptions: ref(model.val.paymentMethodOptions),
-      paymentType,
-      paymentTypeOptions: ref(model.val.paymentTypeOptions),
-      place: ref(model.val.place),
-      placeOptions: ref(model.val.placeOptions),
-      showplace,
-      showplaceFn,
-      address: ref(model.val.address),
-      addressOptions,
-      showaddress,
+      mega,
+      // paymentMethod,
+      // paymentMethodOptions: ref(model.paymentMethodOptions),
+      // paymentType,
+      // paymentTypeOptions: ref(model.paymentTypeOptions),
+      // place: ref(model.place),
+      // placeOptions: ref(model.placeOptions),
+      // showplace,
+      // address: ref(model.address),
+      // addressOptions,
+      // showaddress,
+      // comment: ref(model.comment),
+      // sum: ref(model.sum),
+      // paymenticon,
+      // consumption,
+      // consumptionOptions,
+      // showconsumption,
       showaddressFn,
       filteraddressFn,
-      comment: ref(model.val.comment),
-      sum: ref(model.val.sum),
-      paymenticon,
-      consumption,
-      consumptionOptions,
-      showconsumption,
+      showplaceFn,
       showconsumptionFn,
       filterconsumptionFn,
       appendRow2
