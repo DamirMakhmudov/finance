@@ -9,18 +9,18 @@
   <title>Finance</title>
 </head>
 <body>
-  <div id="fin-app" :key="rendercomp=1">
-
+  <div id="fin-app">
+    <!-- <comp :square='square'></comp> -->
   </div>
 
   <script>
     /* backend functions from spreadsheet*/
   </script>
 
-   <!-- Import Vue -->
-   <script src="https://unpkg.com/vue@next"></script>
+  <!-- Import Vue -->
+  <script src="https://unpkg.com/vue@next"></script>
 
-    <!-- Import Quasar -->
+  <!-- Import Quasar -->
   <script src="https://cdn.jsdelivr.net/npm/quasar@2.0.0-beta.9/dist/quasar.umd.prod.js"></script>
 
   <!-- Import JS -->
@@ -28,6 +28,7 @@
 
   <!-- Import components -->
   <script src="./root.js"></script>
+  <script src="./comp.js"></script>
   
   <!-- Mount app -->
   <script>const vm = app.mount('#fin-app')</script>

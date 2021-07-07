@@ -1,16 +1,16 @@
 var model = {
-  paymentMethod: { 'val': "" },
-
-  paymentMethodOptions: [
-    { label: 'Нал', value: 'cash' },
-    { label: 'Безнал', value: 'cashless' }
-  ],
-
   paymentType: { 'val': "" },
   
   paymentTypeOptions: [
     { label: 'Приход', value: 'income' },
     { label: 'Расход', value: 'outcome' }
+  ],
+
+  paymentMethod: { 'val': "" },
+
+  paymentMethodOptions: [
+    { label: 'Нал', value: 'cash' },
+    { label: 'Безнал', value: 'cashless' }
   ],
 
   place: { 'val': "" },
@@ -37,6 +37,7 @@ var model = {
   ],
 
   comment: {'val':''},
+  comment: '',
 
   sum: {'val':0},
 

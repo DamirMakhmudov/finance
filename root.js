@@ -1,4 +1,4 @@
-const { createApp, ref, reactive, computed, watch, onMounted, watchEffect, onBeforeUnmount } = Vue;
+const { getCurrentInstance, createApp, ref, reactive, computed, watch, onMounted, watchEffect, onBeforeUnmount } = Vue;
 const { useQuasar, Loading, QSpinnerGears } = Quasar;
 
 var vueObject = {
@@ -6,237 +6,21 @@ var vueObject = {
   template:
   /*html*/
   `
-  <div class="q-pa-md fit column justify-center">
-    <!-- first buttons -->
-    <div class="q-gutter-y-xs" style="height:120px">
-    <q-btn-toggle
-        spread
-        v-model = "mega.paymentType.val"
-        toggle-color = "positive"
-        :options= "mega.paymentTypeOptions"
-        v-on:click="showaddressFn();showconsumptionFn()"
-      />
-      <q-btn-toggle
-        spread
-        v-model = "mega.paymentMethod.val"
-        toggle-color = "primary"
-        :options= "mega.paymentMethodOptions"
-        v-on:click="showplaceFn()"
-      />
-
-      <q-btn-toggle v-if="mega.showplace"
-        spread
-        v-model = "mega.place.val"
-        toggle-color = "accent"
-        :options= "mega.placeOptions"
-      />
-    </div>
-    <div class="q-gutter-y-xs">
-      <q-input
-        v-model="mega.comment.val"
-        label="Комментарий"
-        autogrow
-      >
-        <template v-slot:prepend>
-          <q-icon name="chat" />
-        </template>
-      </q-input>
-    
-
-      <q-input
-        v-model.number="mega.sum.val"
-        label='Сумма'
-        type="number"
-      >
-        <template v-slot:prepend>
-          <q-icon :name="mega.paymenticon"/>
-        </template>
-      </q-input>
-
-      <q-select
-        v-model="mega.consumption.val"
-        use-input
-        input-debounce="0"
-        label="Тип расхода"
-        :options="mega.consumptionOptions"
-        @filter="filterconsumptionFn"
-        behavior="menu"
-        v-if="mega.showconsumption"
-      >
-        <template v-slot:prepend>
-          <q-icon name="list" />
-        </template>
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              Не нашел такого, ты уверен(а)?
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-
-      <q-select
-        v-model="mega.address.val"
-        use-input
-        input-debounce="0"
-        label="Адрес"
-        :options="mega.addressOptions"
-        @filter="filteraddressFn"
-        behavior="menu"
-        v-if="mega.showaddress"
-      >
-        <template v-slot:prepend>
-          <q-icon name="location_on" />
-        </template>
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              Не нашел такого, ты уверен(а)?
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-      
-      <q-btn color="primary" label="Добавить" class="fit" @click="appendRow()"/>
-    </div>
-  </div>
+  <comp :key='square'></comp>
+  <q-btn color="primary" label="Добавить" class="fit" @click="forceUp()"/>
+  {{square}}
   `
   ,
-  setup() {
-    // const paymentMethod = ref(model.paymentMethod);
-    // const paymentType = ref(model.paymentType);
-    // const showplace = ref(false);
-    // const showaddress = ref(false);
-    // const addressOptions = ref(model.addressOptions);
-    // const paymenticon = ref('payments');
-    // const consumption = ref(model.consumption);
-    // const consumptionOptions = ref(model.consumptionOptions.map(item => item.label));
-    // const showconsumption = ref(false);
-    
-    const mega = reactive ({
-      paymentMethod : model.paymentMethod,
-      paymentMethodOptions: model.paymentMethodOptions,
-      paymentTypeOptions: model.paymentTypeOptions,
-      paymentType : model.paymentType,
-      place: model.placeOptions,
-      placeOptions: model.placeOptions,
-      address: model.address,
-      comment: model.comment,
-      sum: model.sum,
-      showplace : false,
-      showaddress : false,
-      addressOptions: model.addressOptions,
-      paymenticon : 'payments',
-      consumption : model.consumption,
-      consumptionOptions : model.consumptionOptions.map(item => item.label),
-      showconsumption : false
-    });
-
-    function filteraddressFn(val, update) {
-      if (val === '') {
-        update(() => {
-          mega.addressOptions = model.addressOptions;
-        })
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        mega.addressOptions = model.addressOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-      })
+  data(){
+    return{
+      square: 0
     }
-
-    function filterconsumptionFn(val, update) {
-      if (val === '') {
-        update(() => {
-          mega.consumptionOptions = model.consumptionOptions
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        mega.consumptionOptions = model.consumptionOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
-      })
-    }
-
-    function showplaceFn() {
-      console.log(mega.paymentMethod.val)
-      // mega.showplace = mega.paymentMethod.val == 'cash' ? true : false;
-      mega.paymenticon = mega.paymentMethod.val == 'cash' ? 'payments' : 'payment';
-    }
-
-    function showaddressFn() {
-      mega.showaddress= mega.paymentType.val == 'income' ? true : false;
-    }
-
-    function showconsumptionFn() {
-      mega.showconsumption = mega.paymentType.val == 'outcome' ? true : false;
-    }
-
-    function appendRow2() {
-      console.log(somedata);
-      // model = 'origin.val';
-      // model.paymentMethod.val = ''
-      // console.log(paymentMethod.value.val);
-      // paymentMethod.value.val = '';
-      // console.log(paymentMethod.value.val);
-      // Object.keys(model).forEach((item, idx)=>{
-      //   if(model[item].hasOwnProperty('val')){
-      //     model[item].val = origin.val[item].val
-      //   }
-      // })
-      // vm.$forceUpdate();
-      // vm.$nextTick(() => {
-        // this.renderComponent = true;
-      // });
-      // location.reload();
-    }
-
-    //  watch(mega.consumption.value, (val) => {
-    //   if (val.val) {
-    //     showaddress.value = val.val.needaddress ? true : false
-    //   }
-    // })
-
-    // watch(mega.consumption.value, (val) => {
-    //   if (val.val) {
-    //     showaddress.value = val.val.needaddress ? true : false
-    //   }
-    // })
-
-    watch(
-      () => mega.consumption,
-      (count, prevCount) => {
-        console.log(count)
-        if (count.val) {
-          mega.showaddress.value = count.val.needaddress ? true : false
-        }
-      }
-    )
-
-    return {
-      mega,
-      // paymentMethod,
-      // paymentMethodOptions: ref(model.paymentMethodOptions),
-      // paymentType,
-      // paymentTypeOptions: ref(model.paymentTypeOptions),
-      // place: ref(model.place),
-      // placeOptions: ref(model.placeOptions),
-      // showplace,
-      // address: ref(model.address),
-      // addressOptions,
-      // showaddress,
-      // comment: ref(model.comment),
-      // sum: ref(model.sum),
-      // paymenticon,
-      // consumption,
-      // consumptionOptions,
-      // showconsumption,
-      showaddressFn,
-      filteraddressFn,
-      showplaceFn,
-      showconsumptionFn,
-      filterconsumptionFn,
-      appendRow2
+  },
+  methods:{
+    forceUp(){
+      console.log('d');
+      this.square+=1;
+      this.$forceUpdate();
     }
   }
 }
