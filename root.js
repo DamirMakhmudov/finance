@@ -8,7 +8,6 @@ var vueObject = {
   `
   <comp :key='square'></comp>
   <q-btn color="primary" label="Добавить" class="fit" @click="forceUp()"/>
-  {{square}}
   `
   ,
   data(){
@@ -18,9 +17,8 @@ var vueObject = {
   },
   methods:{
     forceUp(){
-      console.log('d');
+      console.log(model);
       this.square+=1;
-      this.$forceUpdate();
     }
   }
 }
