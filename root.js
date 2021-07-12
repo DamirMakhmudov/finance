@@ -172,11 +172,9 @@ var vueObject = {
     function refreshApp() {
       Object.keys(mega).forEach(key =>{
         if(mega[key].hasOwnProperty('val')){
-          console.log(key);
           mega[key].val = ""
         }
       });
-      
     }
 
     watch(() => mega.consumption.val,(newVal, prevVal) => {
