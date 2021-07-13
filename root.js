@@ -1,4 +1,4 @@
-const { getCurrentInstance, createApp, ref, reactive, computed, watch, onMounted, watchEffect, onBeforeUnmount } = Vue;
+const { createApp, ref, reactive, computed, watch, onMounted, watchEffect, onBeforeUnmount } = Vue;
 const { useQuasar, Loading, QSpinnerGears } = Quasar;
 
 var vueObject = {
@@ -14,24 +14,24 @@ var vueObject = {
         v-model = "mega.paymentType.val"
         toggle-color = "positive"
         :options= "mega.paymentTypeOptions"
-        v-on:click="showaddressFn();showconsumptionFn()"
+        v-on:click="showaddressFn();showconsumptionFn();"
       >
       </q-btn-toggle>
 
       <q-btn-toggle
-          spread
-          v-model = "mega.paymentMethod.val"
-          toggle-color = "primary"
-          :options= "mega.paymentMethodOptions"
-          v-on:click="showplaceFn()"
+        spread
+        v-model = "mega.paymentMethod.val"
+        toggle-color = "primary"
+        :options= "mega.paymentMethodOptions"
+        v-on:click="showofficeFn();"
       >
       </q-btn-toggle>
 
-      <q-btn-toggle v-if="mega.showplace"
+      <q-btn-toggle v-if="mega.showoffice"
         spread
-        v-model = "mega.place.val"
+        v-model = "mega.office.val"
         toggle-color = "accent"
-        :options= "mega.placeOptions"
+        :options= "mega.officeOptions"
       >
       </q-btn-toggle>
     </div>
@@ -102,7 +102,7 @@ var vueObject = {
         </template>
       </q-select>
       
-      <q-btn color="primary" label="Добавить" class="fit" @click="refreshApp()"/>
+      <q-btn color="primary" label="Добавить" class="fit" @click="refreshApp()" v-if="mega.showbutton"></q-btn>
     </div>
   </div>
   `
@@ -113,9 +113,9 @@ var vueObject = {
       paymentMethodOptions: model.paymentMethodOptions,
       paymentTypeOptions: model.paymentTypeOptions,
       paymentType : model.paymentType,
-      place: model.placeOptions,
-      placeOptions: model.placeOptions,
-      showplace : false,
+      office: model.office,
+      officeOptions: model.officeOptions,
+      showoffice : false,
 
       address: model.address,
       addressOptions: model.addressOptions,
@@ -127,7 +127,8 @@ var vueObject = {
       showconsumption : false,
       
       sum: model.sum,
-      comment: model.comment
+      comment: model.comment,
+      showbutton: computed(() => {return (mega.paymentMethod.val && mega.paymentType.val) ? true : false})
     });
 
     function filteraddressFn(val, update) {
@@ -156,25 +157,28 @@ var vueObject = {
       })
     }
 
-    function showplaceFn() {
-      mega.showplace = mega.paymentMethod.val == 'cash' ? true : false;
-      mega.paymenticon = mega.paymentMethod.val == 'cash' ? 'payments' : 'payment';
+    function showofficeFn() {
+      mega.showoffice = mega.paymentMethod.val == 'Нал' ? true : false;
+      mega.paymenticon = mega.paymentMethod.val == 'Нал' ? 'payments' : 'payment';
     }
 
     function showaddressFn() {
-      mega.showaddress= mega.paymentType.val == 'income' ? true : false;
+      mega.showaddress= mega.paymentType.val == 'Приход' ? true : false;
     }
 
     function showconsumptionFn() {
-      mega.showconsumption = mega.paymentType.val == 'outcome' ? true : false;
+      mega.showconsumption = mega.paymentType.val == 'Расход' ? true : false;
     }
 
     function refreshApp() {
+      // saveDataJS();
+      vm.$forceUpdate();
       Object.keys(mega).forEach(key =>{
         if(mega[key].hasOwnProperty('val')){
           mega[key].val = ""
         }
       });
+      showofficeFn();
     }
 
     watch(() => mega.consumption.val,(newVal, prevVal) => {
@@ -185,7 +189,7 @@ var vueObject = {
       mega,
       showaddressFn,
       filteraddressFn,
-      showplaceFn,
+      showofficeFn,
       showconsumptionFn,
       filterconsumptionFn,
       refreshApp
@@ -206,9 +210,9 @@ Quasar.lang.set(Quasar.lang.ru);
 
  // watch(paymentMethod.value, (val) =>{
 //   console.log(val)
-//   val.val = 'vdnh' ? showplace=true : showplace=false 
+//   val.val = 'vdnh' ? showoffice=true : showoffice=false 
 // })
 
-// var showplace = ref(toggelPaymentMethod(paymentMethod))
-// var showplace = ref(computed(() => { return toggelPaymentMethod(paymentMethod) }));
-// const showplace = ref(computed(() => { return paymentMethod.value.val == 'cash' ? true : false }));
+// var showoffice = ref(toggelPaymentMethod(paymentMethod))
+// var showoffice = ref(computed(() => { return toggelPaymentMethod(paymentMethod) }));
+// const showoffice = ref(computed(() => { return paymentMethod.value.val == 'cash' ? true : false }));
