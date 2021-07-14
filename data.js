@@ -60,8 +60,3 @@ var model = {
     {'label':'Рабочие расходы по объекту','needaddress':false}
   ]
 }
-staty()
-
-function staty(){
-  console.log(true *false)
-}

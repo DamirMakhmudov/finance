@@ -103,6 +103,8 @@ var vueObject = {
       </q-select>
       
       <q-btn color="primary" label="Добавить" class="fit" @click="refreshApp()" v-if="mega.showbutton"></q-btn>
+      <q-btn color="primary" label="Send" class="fit" @click="sendRequest()"></q-btn>
+
     </div>
   </div>
   `
@@ -181,6 +183,62 @@ var vueObject = {
       showofficeFn();
     }
 
+    async function getAccessToken(){
+      let url = 'https://oauth2.googleapis.com/token';
+      let payload = {
+        client_id: ci,
+        client_secret: cs,
+        refresh_token: rt,
+        grant_type: 'refresh_token'
+      };
+      let res = await fetch(url, {
+        method: 'POST',
+        body:JSON.stringify(payload)
+      });
+      at = (await res.json()).access_token;
+    }
+
+    async function sendRequest(){
+      const url = 'https://script.google.com/macros/s/AKfycby-cwcsKKG4-6DPG1q_Mi-4Km4UuqCq-seb_wHDpItJj4xkNnytUOUqcYsFFJgbGkXs/exec';
+      // const url = 'http://jsonplaceholder.typicode.com/posts';
+      const requestOptions = {
+        method: "POST",
+        // mode: 'no-cors',
+        headers: {
+          // "Content-Type": "application/json",
+          // "Content-Type": "undefined",
+          "Content-Type": "application/x-www-form-urlencoded",
+          // "Content-Type": "text/plain",
+          // 'contentType': "application/json; charset=UTF-8",
+          // "Access-Control-Allow-Origin": "*",
+          // 'accept': 'application/json'
+          // 'accept': 'text/plain'
+
+        },
+        body: JSON.stringify({ title: "some data" })
+      };
+
+      let response = await fetch(url, requestOptions);
+      let data = await response.json();
+      console.log(data.status);
+
+      // fetch(url)
+      // .then(response => {
+      //   return response.json()
+      // })
+      // .then(data =>{
+      //   console.log(data.status)
+      // });
+
+      // fetch(url, requestOptions)
+      //   .then(response => {
+      //     return response.json()
+      //   })
+      //   .then(data =>{
+      //     console.log(data)
+      // });
+    }
+
     watch(() => mega.consumption.val,(newVal, prevVal) => {
       mega.showaddress = newVal.needaddress
     })
@@ -192,7 +250,8 @@ var vueObject = {
       showofficeFn,
       showconsumptionFn,
       filterconsumptionFn,
-      refreshApp
+      refreshApp,
+      sendRequest
     }
   }
 }
