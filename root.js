@@ -102,8 +102,7 @@ var vueObject = {
         </template>
       </q-select>
       
-      <q-btn color="primary" label="Добавить" class="fit" @click="refreshApp()" v-if="mega.showbutton"></q-btn>
-      <q-btn color="primary" label="Send" class="fit" @click="sendRequest()"></q-btn>
+      <q-btn color="primary" label="Добавить" class="fit" @click="saveData()" v-if="mega.showbutton"></q-btn>
 
     </div>
   </div>
@@ -172,55 +171,32 @@ var vueObject = {
       mega.showconsumption = mega.paymentType.val == 'Расход' ? true : false;
     }
 
-    function refreshApp() {
-      // saveDataJS();
-      vm.$forceUpdate();
-      Object.keys(mega).forEach(key =>{
-        if(mega[key].hasOwnProperty('val')){
-          mega[key].val = ""
-        }
-      });
-      showofficeFn();
-    }
-
-    async function getAccessToken(){
-      let url = 'https://oauth2.googleapis.com/token';
-      let payload = {
-        client_id: ci,
-        client_secret: cs,
-        refresh_token: rt,
-        grant_type: 'refresh_token'
-      };
-      let res = await fetch(url, {
-        method: 'POST',
-        body:JSON.stringify(payload)
-      });
-      at = (await res.json()).access_token;
-    }
-
-    async function sendRequest(){
-      const url = 'https://script.google.com/macros/s/AKfycby-cwcsKKG4-6DPG1q_Mi-4Km4UuqCq-seb_wHDpItJj4xkNnytUOUqcYsFFJgbGkXs/exec';
-      // const url = 'http://jsonplaceholder.typicode.com/posts';
+    async function saveData(){
+      model.mode = 'finance';
+      const url = 'https://script.google.com/macros/s/AKfycbzUgwNF8Tqs3tmw7sV3ZxWKBDN5bUJ2mfr7mUR5MLrWeCMIvo3GSS4ZfKUbYZN5eXRY/exec';
       const requestOptions = {
         method: "POST",
         // mode: 'no-cors',
         headers: {
           // "Content-Type": "application/json",
           // "Content-Type": "undefined",
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/x-www-form-urlencoded"
           // "Content-Type": "text/plain",
           // 'contentType': "application/json; charset=UTF-8",
-          // "Access-Control-Allow-Origin": "*",
           // 'accept': 'application/json'
           // 'accept': 'text/plain'
-
         },
-        body: JSON.stringify({ title: "some data" })
+        body: JSON.stringify(model)
       };
-
       let response = await fetch(url, requestOptions);
-      let data = await response.json();
-      console.log(data.status);
+      // let data = await response.json();
+      
+      Object.keys(mega).forEach(key =>{
+        if(mega[key].hasOwnProperty('val')){
+          mega[key].val = ""
+        }
+      });
+      showofficeFn();
 
       // fetch(url)
       // .then(response => {
@@ -250,8 +226,7 @@ var vueObject = {
       showofficeFn,
       showconsumptionFn,
       filterconsumptionFn,
-      refreshApp,
-      sendRequest
+      saveData
     }
   }
 }
@@ -267,11 +242,10 @@ app.use(Quasar, {
 
 Quasar.lang.set(Quasar.lang.ru);
 
- // watch(paymentMethod.value, (val) =>{
+// watch(paymentMethod.value, (val) =>{
 //   console.log(val)
 //   val.val = 'vdnh' ? showoffice=true : showoffice=false 
 // })
-
 // var showoffice = ref(toggelPaymentMethod(paymentMethod))
 // var showoffice = ref(computed(() => { return toggelPaymentMethod(paymentMethod) }));
 // const showoffice = ref(computed(() => { return paymentMethod.value.val == 'cash' ? true : false }));
