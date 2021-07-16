@@ -20,10 +20,10 @@ var model = {
     { label: 'ВП', value: 'ВП' }
   ],
 
-  address: {"val":""},
+  address: {"val": "г. Москва, ул. Олонецкая, д. 4, кв. 835"},
   
   addressOptions:[
-    "г.Москва, Волоколамское ш., д.71, корп.1, кв.548",
+    "г. Москва, ул. Олонецкая, д. 4, кв. 835",
     "г.Москва, ул.Старокачаловская, д.1, к.1, кв.100",
     "г.Москва, ул.Вешняковская, д.10, кв.39",
     "г.Москва, Шарикоподшипниковская ул., д.13, стр.24",
@@ -59,4 +59,12 @@ var model = {
     {'label':'Оплата посреднику','needaddress':false},
     {'label':'Рабочие расходы по объекту','needaddress':false}
   ]
+}
+
+// test();
+function test(){
+  // let model2 = Object.assign({}, model);
+  let model2 = JSON.parse(JSON.stringify(model));
+  model.comment.val = '123';
+  console.log(model2.comment.val);
 }

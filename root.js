@@ -173,6 +173,17 @@ var vueObject = {
 
     async function saveData(){
       model.mode = 'finance';
+      model.consumption.val = model.consumption.val.label;
+      let model2 = JSON.parse(JSON.stringify(model));
+
+      Object.keys(mega).forEach(key =>{
+        if(mega[key].hasOwnProperty('val')){
+          mega[key].val = ""
+        }
+      });
+      showofficeFn();
+      showconsumptionFn();
+
       const url = 'https://script.google.com/macros/s/AKfycbzUgwNF8Tqs3tmw7sV3ZxWKBDN5bUJ2mfr7mUR5MLrWeCMIvo3GSS4ZfKUbYZN5eXRY/exec';
       const requestOptions = {
         method: "POST",
@@ -186,18 +197,11 @@ var vueObject = {
           // 'accept': 'application/json'
           // 'accept': 'text/plain'
         },
-        body: JSON.stringify(model)
+        body: JSON.stringify(model2)
       };
       let response = await fetch(url, requestOptions);
       // let data = await response.json();
       
-      Object.keys(mega).forEach(key =>{
-        if(mega[key].hasOwnProperty('val')){
-          mega[key].val = ""
-        }
-      });
-      showofficeFn();
-
       // fetch(url)
       // .then(response => {
       //   return response.json()
