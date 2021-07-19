@@ -44,20 +44,20 @@ var model = {
 
   consumptionOptions: [
     {'label':'Бонусы менеджеры','needaddress':false},
-    {'label':'Отзывы','needaddress':false},
+    {'label':'Отзывы','needaddress':true},
     {'label':'ЗП','needaddress':false},
     {'label':'Налоги','needaddress':false},
-    {'label':'Контекстная реклама','needaddress':true},
+    {'label':'Контекстная реклама','needaddress':false},
     {'label':'Нужды офиса','needaddress':false},
     {'label':'Дима','needaddress':false},
     {'label':'Подрядчики для работы организации','needaddress':false},
     {'label':'Другая реклама','needaddress':false},
     {'label':'Аренда офиса','needaddress':false},
-    {'label':'Курьеры','needaddress':false},
+    {'label':'Курьеры','needaddress':true},
     {'label':'Для работы согласователей','needaddress':true},
     {'label':'Телефония','needaddress':false},
-    {'label':'Оплата посреднику','needaddress':false},
-    {'label':'Рабочие расходы по объекту','needaddress':false}
+    {'label':'Оплата посреднику','needaddress':true},
+    {'label':'Рабочие расходы по объекту','needaddress':true}
   ]
 }
 
