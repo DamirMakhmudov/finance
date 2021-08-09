@@ -1,4 +1,4 @@
-const { createApp, ref, reactive, computed, watch, onMounted, watchEffect, onBeforeUnmount } = Vue;
+const { createApp, ref, reactive, computed, watch, onMounted, watchEffect, onBeforeUnmount} = Vue;
 const { useQuasar, Loading, QSpinnerGears } = Quasar;
 
 var vueObject = {
@@ -36,8 +36,9 @@ var vueObject = {
       </q-btn-toggle>
     </div>
 
-    <!-- fields-->
+    <!-- fields -->
     <div class="q-gutter-y-xs">
+      <!-- comment -->
       <q-input
         v-model="mega.comment.val"
         label="Комментарий"
@@ -48,16 +49,19 @@ var vueObject = {
         </template>
       </q-input>
 
+      <!-- sum -->
       <q-input
-        v-model.number="mega.sum.val"
+        v-model="mega.sum.val"
         label='Сумма'
-        type="number"
+        mask='# ### ### ###'
+        reverse-fill-mask
       >
         <template v-slot:prepend>
           <q-icon :name="mega.paymenticon"/>
         </template>
       </q-input>
 
+      <!-- cinsumption -->
       <q-select
         v-model="mega.consumption.val"
         use-input
@@ -79,7 +83,30 @@ var vueObject = {
           </q-item>
         </template>
       </q-select>
+      
+      <!-- sheets-->
+      <q-select
+        v-model="mega.sheet.val"
+        use-input
+        input-debounce="0"
+        label="Лист"
+        :options="mega.sheets"
+        behavior="menu"
+        v-if="mega.showaddress"
+      >
+        <template v-slot:prepend>
+          <q-icon name="list" />
+        </template>
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              Не нашел такого, ты уверен(а)?
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
 
+      <!-- address-->
       <q-select
         v-model="mega.address.val"
         use-input
@@ -87,6 +114,7 @@ var vueObject = {
         label="Адрес"
         :options="mega.addressOptions"
         @filter="filteraddressFn"
+        @filter-abort="abortFilterFn"
         behavior="menu"
         v-if="mega.showaddress"
       >
@@ -102,6 +130,7 @@ var vueObject = {
         </template>
       </q-select>
       
+      <!-- button -->
       <q-btn color="primary" label="Добавить" class="fit" @click="saveData()" v-if="mega.showbutton"></q-btn>
 
     </div>
@@ -129,23 +158,56 @@ var vueObject = {
       
       sum: model.sum,
       comment: model.comment,
-      showbutton: computed(() => {return (mega.paymentMethod.val && mega.paymentType.val) ? true : false})
+      showbutton: computed(() => {return (mega.paymentMethod.val && mega.paymentType.val) ? true : false}),
+      
+      sheet: model.sheet,
+      sheets: model.sheets,
+      // sheetselected: computed(() => {return (mega.sheet.val != 'Менеджер.Архив') ? model.addressOptions : model.addressOptionsArchive}),
     });
 
     function filteraddressFn(val, update) {
       if (val === '') {
         update(() => {
-          mega.addressOptions = model.addressOptions;
+          mega.addressOptions = mega.sheet.val != 'Менеджер.Архив' ? model.addressOptions : model.addressOptionsArchive;
         })
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        mega.addressOptions = model.addressOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        // mega.addressOptions = model.addressOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+        mega.addressOptions = (mega.sheet.val != 'Менеджер.Архив' ? model.addressOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1) : model.addressOptionsArchive.filter(v => v.label.toLowerCase().indexOf(needle) > -1));
       })
     }
 
-    function filterconsumptionFn(val, update) {
+    function abortFilterFn () {
+      console.log('delayed filter aborted')
+    }
+
+    async function getArchiveAddress(){
+      const url = 'https://script.google.com/macros/s/AKfycbzUgwNF8Tqs3tmw7sV3ZxWKBDN5bUJ2mfr7mUR5MLrWeCMIvo3GSS4ZfKUbYZN5eXRY/exec?key=address';
+      const requestOptions = {
+        method: "GET",
+        // mode: 'no-cors',
+        headers: {
+          // "Content-Type": "application/json",
+          // "Content-Type": "undefined",
+          "Content-Type": "application/x-www-form-urlencoded"
+          // "Content-Type": "text/plain",
+          // 'contentType': "application/json; charset=UTF-8",
+          // 'accept': 'application/json'
+          // 'accept': 'text/plain'
+        }
+      };
+      let response = await fetch(url, requestOptions);
+      let data = await response.json();
+      model.addressOptionsArchive = data.addressValsArchive;
+      // [{"label": "г.Москва, Шарикоподшипниковская ул., д.13, стр.24","sheet":"Менеджер.Архив"},
+        // {"label": "г.Москва, ул.Арбат, д.10, кв.39","sheet":"Менеджер.Архив"},
+        // {"label": "г.Москва, ул.Академика Янгеля, д.1, корп.1, кв.145","sheet":"Менеджер.Архив"},
+        // {"label": "г.Москва, ул.Библиотечная, д.27, кв. 110","sheet":"Менеджер.Архив"}];
+    }
+
+    function filterconsumptionFn(val, update, abort) {
       if (val === '') {
         update(() => {
           mega.consumptionOptions = model.consumptionOptions
@@ -161,6 +223,7 @@ var vueObject = {
     function showofficeFn() {
       mega.showoffice = mega.paymentMethod.val == 'Нал' ? true : false;
       mega.paymenticon = mega.paymentMethod.val == 'Нал' ? 'payments' : 'payment';
+      console.log(mega.paymentMethod.val)
     }
 
     function showaddressFn() {
@@ -173,7 +236,10 @@ var vueObject = {
 
     async function saveData(){
       model.mode = 'finance';
+      model.sum.val = +model.sum.val.replace(/ /g, '');
       model.consumption.val = model.consumption.val.label;
+      model.address.val = model.address.val.label;
+
       let model2 = JSON.parse(JSON.stringify(model));
 
       Object.keys(mega).forEach(key =>{
@@ -183,6 +249,7 @@ var vueObject = {
       });
       showofficeFn();
       showconsumptionFn();
+      showaddressFn();
 
       const url = 'https://script.google.com/macros/s/AKfycbzUgwNF8Tqs3tmw7sV3ZxWKBDN5bUJ2mfr7mUR5MLrWeCMIvo3GSS4ZfKUbYZN5eXRY/exec';
       const requestOptions = {
@@ -223,6 +290,11 @@ var vueObject = {
       mega.showaddress = newVal.needaddress
     })
 
+    watch(() => mega.sheet.val,(newVal, prevVal) => {
+      getArchiveAddress();
+      mega.addressOptions = newVal != 'Менеджер.Архив' ? model.addressOptions : model.addressOptionsArchive
+    })
+
     return {
       mega,
       showaddressFn,
@@ -230,6 +302,7 @@ var vueObject = {
       showofficeFn,
       showconsumptionFn,
       filterconsumptionFn,
+      abortFilterFn,
       saveData
     }
   }
