@@ -77,7 +77,7 @@ var model = {
 
 // test();
 function test(){
-  // let model2 = Object.assign({}, model);
+  // let model2 = Object.assign({}, model);!cl
   // let model2 = JSON.parse(JSON.stringify(model));
   // model.comment.val = '123';
   // console.log(model2.comment.val);
