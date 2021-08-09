@@ -95,7 +95,7 @@ var vueObject = {
         v-if="mega.showaddress"
       >
         <template v-slot:prepend>
-          <q-icon name="list" />
+          <q-icon name="dynamic_feed" />
         </template>
         <template v-slot:no-option>
           <q-item>
@@ -291,8 +291,12 @@ var vueObject = {
     })
 
     watch(() => mega.sheet.val,(newVal, prevVal) => {
-      getArchiveAddress();
+      // getArchiveAddress();
       mega.addressOptions = newVal != 'Менеджер.Архив' ? model.addressOptions : model.addressOptionsArchive
+    })
+
+    onMounted(()=>{
+      getArchiveAddress()
     })
 
     return {
