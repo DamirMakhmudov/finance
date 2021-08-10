@@ -10,8 +10,10 @@ var model = {
 
   paymentMethodOptions: [
     { label: 'Нал', value: 'Нал' },
-    { label: 'Безнал', value: 'Безнал' },
-    { label: 'Карта', value: 'Карта' }
+    { label: 'ООО', value: 'ООО' },
+    { label: 'Карта', value: 'Карта' },
+    { label: 'ИП', value: 'ИП' }
+
   ],
 
   office: {"val":""},

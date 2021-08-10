@@ -184,7 +184,7 @@ var vueObject = {
     }
 
     async function getArchiveAddress(){
-      const url = 'https://script.google.com/macros/s/AKfycbzUgwNF8Tqs3tmw7sV3ZxWKBDN5bUJ2mfr7mUR5MLrWeCMIvo3GSS4ZfKUbYZN5eXRY/exec?key=address';
+      const url = 'https://script.google.com/macros/s/AKfycbzUgwNF8Tqs3tmw7sV3ZxWKBDN5bUJ2mfr7mUR5MLrWeCMIvo3GSS4ZfKUbYZN5eXRY/exec?key=address&sheet=Менеджер.Архив';
       const requestOptions = {
         method: "GET",
         // mode: 'no-cors',
@@ -200,7 +200,7 @@ var vueObject = {
       };
       let response = await fetch(url, requestOptions);
       let data = await response.json();
-      model.addressOptionsArchive = data.addressValsArchive;
+      model.addressOptionsArchive = data.address;
       // [{"label": "г.Москва, Шарикоподшипниковская ул., д.13, стр.24","sheet":"Менеджер.Архив"},
         // {"label": "г.Москва, ул.Арбат, д.10, кв.39","sheet":"Менеджер.Архив"},
         // {"label": "г.Москва, ул.Академика Янгеля, д.1, корп.1, кв.145","sheet":"Менеджер.Архив"},
