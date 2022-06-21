@@ -26,7 +26,7 @@ var vueObject = {
         v-on:click="showofficeFn();"
       >
       </q-btn-toggle>
-
+      <!--
       <q-btn-toggle v-if="mega.showoffice"
         spread
         v-model = "mega.office.val"
@@ -34,6 +34,7 @@ var vueObject = {
         :options= "mega.officeOptions"
       >
       </q-btn-toggle>
+      -->
     </div>
 
     <!-- fields -->
@@ -61,7 +62,7 @@ var vueObject = {
         </template>
       </q-input>
 
-      <!-- cinsumption -->
+      <!-- consumption -->
       <q-select
         v-model="mega.consumption.val"
         use-input
@@ -201,10 +202,6 @@ var vueObject = {
       let response = await fetch(url, requestOptions);
       let data = await response.json();
       model.addressOptionsArchive = data.address;
-      // [{"label": "г.Москва, Шарикоподшипниковская ул., д.13, стр.24","sheet":"Менеджер.Архив"},
-        // {"label": "г.Москва, ул.Арбат, д.10, кв.39","sheet":"Менеджер.Архив"},
-        // {"label": "г.Москва, ул.Академика Янгеля, д.1, корп.1, кв.145","sheet":"Менеджер.Архив"},
-        // {"label": "г.Москва, ул.Библиотечная, д.27, кв. 110","sheet":"Менеджер.Архив"}];
     }
 
     function filterconsumptionFn(val, update, abort) {
@@ -312,7 +309,7 @@ var vueObject = {
   }
 }
 
-const app = Vue.createApp(vueObject)
+const app = Vue.createApp(vueObject);
 
 app.use(Quasar, {
   config: {
