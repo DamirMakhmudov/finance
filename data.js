@@ -12,8 +12,8 @@ var model = {
     { label: 'Нал', value: 'Нал' },
     { label: 'ООО', value: 'ООО' },
     { label: 'Карта', value: 'Карта' },
-    { label: 'ИП', value: 'ИП' }
-
+    { label: 'ИП', value: 'ИП' },
+    { label: 'Нал (К)', value: 'Нал (К)' }
   ],
 
   office: {"val":""},

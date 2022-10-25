@@ -8,7 +8,7 @@ var vueObject = {
   `
   <div class="q-pa-md fit column justify-center">
     <!-- first buttons -->
-    <div class="q-gutter-y-xs" style="height:120px">
+    <div class="q-gutter-y-xs" style="height:220px">
       <q-btn-toggle
         spread
         v-model = "mega.paymentType.val"
@@ -18,7 +18,7 @@ var vueObject = {
       >
       </q-btn-toggle>
 
-      <q-btn-toggle
+      <q-btn-toggle style="flex-direction: column"
         spread
         v-model = "mega.paymentMethod.val"
         toggle-color = "primary"
@@ -26,6 +26,7 @@ var vueObject = {
         v-on:click="showofficeFn();"
       >
       </q-btn-toggle>
+      
       <!--
       <q-btn-toggle v-if="mega.showoffice"
         spread
