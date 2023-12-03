@@ -1,383 +1,449 @@
-const { createApp, ref, reactive, computed, watch, onMounted, watchEffect, onBeforeUnmount } = Vue;
-const { useQuasar, Loading, QSpinnerGears } = Quasar;
-
-var vueObject = {
-  name: "root",
-  template:
-    /*html*/
-    `
-  <div class="q-pa-md fit column justify-center">
-    <!-- first buttons -->
-    <div class="q-gutter-y-xs" style="height:220px">
-      <q-btn-toggle
-        spread
-        v-model = "mega.paymentType.val"
-        toggle-color = "positive"
-        :options= "mega.paymentTypeOptions"
-        v-on:click="showaddressFn();showconsumptionFn()"
-      >
-      </q-btn-toggle>
-
-      <q-btn-toggle style="flex-direction: column"
-        spread
-        v-model = "mega.paymentMethod.val"
-        toggle-color = "primary"
-        :options= "mega.paymentMethodOptions"
-        v-on:click="showofficeFn();"
-      >
-      </q-btn-toggle>
-      
-      <!--
-      <q-btn-toggle
-        spread
-        v-model = "mega.paymentMethod.val"
-        toggle-color = "primary"
-        :options= "mega.paymentMethodOptions"
-        v-on:click="showofficeFn();"
-      >
-      </q-btn-toggle>
-      -->
-
-      <!--
-      <q-btn-toggle v-if="mega.showoffice"
-        spread
-        v-model = "mega.office.val"
-        toggle-color = "accent"
-        :options= "mega.officeOptions"
-      >
-      </q-btn-toggle>
-      -->
-
-    </div>
-
-    <!-- fields -->
-    <div class="q-gutter-y-xs">
-      <!-- comment -->
-      <q-input
-        v-model="mega.comment.val"
-        label="Комментарий"
-        autogrow
-      >
-        <template v-slot:prepend>
-          <q-icon name="chat" />
-        </template>
-      </q-input>
-
-      <!-- sum -->
-      <q-input
-        v-model="mega.sum.val"
-        label='Сумма'
-        mask='# ### ### ###'
-        reverse-fill-mask
-      >
-        <template v-slot:prepend>
-          <q-icon :name="mega.paymenticon"/>
-        </template>
-      </q-input>
-
-      <!-- consumption -->
-      <q-select
-        v-model="mega.consumption.val"
-        use-input
-        input-debounce="0"
-        label="Тип расхода"
-        :options="mega.consumptionOptions"
-        @filter="filterconsumptionFn"
-        behavior="menu"
-        v-if="mega.showconsumption"
-        >
-
-        <template v-slot:prepend>
-          <q-icon name="list" />
-        </template>
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              Не нашел такого, ты уверен(а)?
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-      
-      <!-- sheets-->
-      <q-select
-        v-model="mega.sheet.val"
-        use-input
-        input-debounce="0"
-        label="Лист"
-        :options="mega.sheets"
-        behavior="menu"
-        v-if="mega.showaddress"
-      >
-        <template v-slot:prepend>
-          <q-icon name="dynamic_feed" />
-        </template>
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              Не нашел такого, ты уверен(а)?
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-
-      <!-- address-->
-      <q-select
-        v-model="mega.address.val"
-        use-input
-        input-debounce="0"
-        label="Адрес"
-        :options="mega.addressOptions"
-        @filter="filteraddressFn"
-        @filter-abort="abortFilterFn"
-        behavior="menu"
-        v-if="mega.showaddress"
-      >
-        <template v-slot:prepend>
-          <q-icon name="location_on" />
-        </template>
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              Не нашел такого, ты уверен(а)?
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-
-       <!-- manager -->
-       <q-select
-       v-model="mega.manager.val"
-       use-input
-       input-debounce="0"
-       label="Менеджер"
-       :options="mega.userOptions"
-       behavior="menu"
-       @filter="filterusersFn"
-       v-if="mega.showmanager"
-       >
-       <template v-slot:prepend>
-         <q-icon name="list" />
-       </template>
-       <template v-slot:no-option>
-         <q-item>
-           <q-item-section class="text-grey">
-             Не нашел такого, ты уверен(а)?
-           </q-item-section>
-         </q-item>
-       </template>
-     </q-select>
-      
-      <!-- button -->
-      <q-btn color="primary" label="Добавить" class="fit" @click="saveData()" v-if="mega.showbutton"></q-btn>
-
-    </div>
-  </div>
-  `
+var model = {
+  user: { "val": "samrukov@gmail.com" },
+  userOptions: [
+    'Марина Дубицкая',
+    'Марина Бареева',
+    'Анастасия Устинова',
+    'Анастасия Лупащенко',
+    'Юлия Емельянова',
+    'Елена Сумская',
+    'Максим Джураев',
+    'Евгения Светлекова',
+    'Камилла Сохова',
+    'Екатерина Семёнова',
+    'Юлия Корнилаева',
+    'Алиса Шарандак',
+    'Юлия Бекренёва',
+    'Ирина Журавлева',
+    'Александра Осипова',
+    'yand',
+    'Сотрудник не работает'],
+  paymentType: { "val": "" },
+  paymentTypeOptions: [
+    { label: 'Приход', value: 'Приход' },
+    { label: 'Расход', value: 'Расход' },
+    { label: 'Перенос', value: 'Перенос' },
+    { label: 'Бонус', value: 'Бонус' }
+  ],
+  paymentMethod: { "val": "" },
+  paymentMethodTo: { "val": "" },
+  paymentMethodOptions:
+    [
+      'ООО',
+      'Нал',
+      'ИП',
+      'Карта СБ',
+      'Карта Тинькофф',
+      'Робокасса'
+    ],
+  address: { "val": "" },
+  addressOptions: [
+    {
+      label: 'г.Москва, ул.11-я Текстильщиков, д.12, кв.142',
+      sheet: 'Менеджер'
+    },
+    { label: 'Тест', sheet: 'Менеджер' },
+    {
+      label: 'г.Москва, ул.Раевского, д.3, кв.199',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Москва, ул.Маломосковская, д.14, кв.38',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Москва, ул.Усачева, д.15А, кв.8Б',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Москва, Береговой пр-д, д.1А, кв.144',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Москва, ул.Удальцова, д.3, корп.13, кв.129',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, Парадная ул., д.3, корп.2, литера А, кв.732',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'ЛО, г.Кудрово, ул.Областная, д.1, кв.2039',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул. Вёсельная, д.7/10, литера. А, кв.19',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Верности, д.44, корп.3, кв.4',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, пр-кт Энгельса, д.32, лит.Б, кв.4',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Всеволожск, ш.Колтушское, д.124, корп.2, кв.25',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, пр.Тореза, д.35, к.2, кв.19',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, пр.Художников, лит.А, д.15, корп.1, кв.130',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул. Ключевая, д.27, лит.А, кв.31',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Жукова, д.1, стр.1, кв. 284',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, 5-ый Предпортовый пр-д, д.2, стр.1, кв.262',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Плесецкая, д.21, стр.1, кв.246',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, Московский пр., д.66, кв.48',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Ярослава Гашека, д.8, корп.1, лит.А, кв.175',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Марата, д.76, кв.29',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Александра Матросова, д.1, стр.1, кв. 20',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, пер.Ипподромный, д.3, корп.1, стр.1, кв.45',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, пр. Ярославский, д.62, лит.А, кв.3',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, Усть-Славянка, Советский пр-кт, д.18, стр.1, кв. 68',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Рубинштейна, д.22, лит.Б, кв.23',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Гражданская, д.8, лит.А, кв.5',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, 2-я линия В.О., д.33, лит.А, кв.20',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Седова, д.116, лит.Т, кв.28',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Севастьянова, д.4, лит.А, кв.67',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Львовская, д.9, стр.1, кв.347',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, Малый пр. В.О., д.52, стр.1, кв.132',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Сердобольская, д.37, лит.А, кв.2',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, Большой Сампсониевский пр., д. 66, литера А',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Софьи Ковалевской, д.3, корп.4, лит.А, кв.188',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург,пр. Малодетскосельский, д.36, лит.А, кв.88',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Тележная, д.32, стр.1, кв.69',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул. Мытнинская, д.11, лит.А, кв.10',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, Новосмоленская наб., д.1, лит.В, кв.365',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Двинская, д.6, стр.1, кв.110',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Шевченко, д.4, лит.А, кв.6',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, п.Стрельна, ш. Санкт-Петербургское, д.96, литера А, пом. 2-Н',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, ул. Вавиловых, д.4, корп.2, лит.А, кв.264',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Сестрорецк, ул.Максима Горького, д.2а, стр.2, помещ.328-Н',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Дыбенко д.23, корп.1, лит. Ф, кв.171',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул. 4-я Красноармейская , д.2/35, лит.А, кв.28',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Двинская, д.6, стр.1, кв.15',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Белоостровская, д.10, к.1, стр.1, кв.839',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'ЛО, г.Мурино, ул.Екатерининская, д.10, кв.25',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Белоостровская, д.12, стр.1, кв.244',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул. Миргородская, д.20, стр.1, кв.57',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, Дальневосточный пр-кт, д.35, корп. 1, стр.1, кв.428',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, ул.Подольская, д.38, кв.16',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, ул.Студенческая, д.14, корп.1, стр.1, кв.15',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, б-р Александра Грина, д. 3, стр. 1, пом. 434',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург,5-й Предпортовый пр-д, д.8, корп.1, кв.374',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, пос.Парголово, Выборгское ш., д.226, лит.А',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, ул. Бестужевская, д.18, лит. А, кв. 40',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Пушкин, тер.Гуммолосары,ул.Анциферовская, д.13, стр.1, кв.40',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, ул.Партизана Германа, д.9,корп.3, лит.А, кв.30',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, ул. Маринеско, д. 2/7, литера. А, кв. 36',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, ул.Благодатная, д.15, кв.43',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, Воскресенская наб., д.6-8, кв.284',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, Воскресенская наб., д.6-8, кв.285',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, Воскресенская наб., д.6-8, кв.289',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, Воскресенская наб., д.6-8, кв.277',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, пр-кт Кузнецова, д.22, корп.1, кв.262',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, пр. Маршала Жукова, д.72, корп.2, кв.121',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'Л.О., Всеволожский р-н, г.Мурино, б-р Менделеева, д.11, к.1, кв.113',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.9-я Советская, д.19, корп.1, лит.А, кв.4',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, Московский пр-кт, д.153, лит.А, кв.22',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул. Дыбенко, д.2, стр.1, кв.727',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, г.Пушкин, Оранжерейная ул., д.51а, стр.1, кв.19',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, 6-я линия В.О., д.5/5, лит.А, кв.3',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул. Маяковского, д.32/11, лит.А, кв.16',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Решетникова, д.17, корп.2, кв.3',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, г.Пушкин, ул.Красной Звезды, д.8, кв.46',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Киевская, д.3, лит.А, кв.434',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул. 10-я Советская, д.11, лит.А, кв.6',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, ул.Планерная, д.91, корп.1, стр.1, кв.402',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г. Санкт-Петербург, г. Пушкин, ул. Оранжерейная, д.14/50 лит.А, кв.25',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, ул.Двинская, д.6, стр.1, кв.95',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, Лесной пр-кт, д.1а, кв.8',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, аллея Придорожная, д.9, корп. 1, лит. А, кв.575',
+      sheet: 'Менеджер'
+    },
+    {
+      label: 'г.Санкт-Петербург, пр-кт Науки, д.19, корп.2, лит.А, пом.51-Н',
+      sheet: 'Менеджер'
+    }
+  ]
   ,
-  setup() {
-    var mega = reactive({
-      paymentMethod: model.paymentMethod,
-      paymentMethodOptions: model.paymentMethodOptions,
-      paymentTypeOptions: model.paymentTypeOptions,
-      paymentType: model.paymentType,
-      office: model.office,
-      officeOptions: model.officeOptions,
-      showoffice: false,
-
-      address: model.address,
-      addressOptions: model.addressOptions,
-      showaddress: false,
-
-      paymenticon: 'payments',
-      consumption: model.consumption,
-      manager: model.managerApp,
-
-      consumptionOptions: model.consumptionOptions.map(item => item.label),
-      userOptions: model.userOptions,
-
-      showconsumption: false,
-      showmanager: false,
-
-      sum: model.sum,
-      comment: model.comment,
-      showbutton: computed(() => { return (mega.paymentMethod.val && mega.paymentType.val) ? true : false }),
-
-      sheet: model.sheet,
-      sheets: model.sheets
-      // sheetselected: computed(() => {return (mega.sheet.val != 'Менеджер.Архив') ? model.addressOptions : model.addressOptionsArchive}),
-    });
-
-    function filteraddressFn(val, update) {
-      if (val === '') {
-        update(() => {
-          mega.addressOptions = mega.sheet.val != 'Менеджер.Архив' ? model.addressOptions : model.addressOptionsArchive;
-        })
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        mega.addressOptions = (mega.sheet.val != 'Менеджер.Архив' ? model.addressOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1) : model.addressOptionsArchive.filter(v => v.label.toLowerCase().indexOf(needle) > -1));
-      })
-    }
-
-    function filterconsumptionFn(val, update, abort) {
-      if (val === '') {
-        update(() => {
-          mega.consumptionOptions = model.consumptionOptions
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        mega.consumptionOptions = model.consumptionOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
-      })
-    }
-
-    function filterusersFn(val, update, abort) {
-      if (val === '') {
-        update(() => {
-          mega.userOptions = model.userOptions
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        mega.userOptions = model.userOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-      })
-    }
-
-    function abortFilterFn() {
-      console.log('delayed filter aborted')
-    }
-
-    async function getArchiveAddress() {
-      const url = 'https://script.google.com/macros/s/AKfycbzUgwNF8Tqs3tmw7sV3ZxWKBDN5bUJ2mfr7mUR5MLrWeCMIvo3GSS4ZfKUbYZN5eXRY/exec?key=financeaddress&sheet=Менеджер.Архив';
-      const requestOptions = {
-        method: "GET",
-        // mode: 'no-cors',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
-      };
-      let response = await fetch(url, requestOptions);
-      let data = await response.json();
-      model.addressOptionsArchive = data.address;
-    }
-
-    function showofficeFn() {
-      mega.showoffice = mega.paymentMethod.val == 'Нал' ? true : false;
-      mega.paymenticon = mega.paymentMethod.val == 'Нал' ? 'payments' : 'payment';
-    }
-
-    function showaddressFn() {
-      mega.showaddress = mega.paymentType.val == 'Приход' ? true : false;
-    }
-
-    function showconsumptionFn() {
-      mega.showconsumption = mega.paymentType.val == 'Расход' ? true : false;
-    }
-
-    async function saveData() {
-      model.mode = 'finance';
-      model.sum.val = +model.sum.val.replace(/ /g, '');
-      model.consumption.val = model.consumption.val.label;
-      model.address.val = model.address.val.label;
-
-      let model2 = JSON.parse(JSON.stringify(model));
-
-      Object.keys(mega).forEach(key => {
-        if (mega[key].hasOwnProperty('val')) {
-          mega[key].val = ""
-        }
-      });
-
-      mega.sheet.val = 'Менеджер';
-      showofficeFn();
-      showconsumptionFn();
-      showaddressFn();
-
-
-      // var url = 'https://script.google.com/macros/s/AKfycbzUgwNF8Tqs3tmw7sV3ZxWKBDN5bUJ2mfr7mUR5MLrWeCMIvo3GSS4ZfKUbYZN5eXRY/exec';
-      var url = 'https://script.google.com/macros/s/AKfycbxmMJGGfMm8WeOzFsk9gSCgvfE3TtOL1ERB00cQR0waTYtV0AAduN-7X3fgyu59btG9lQ/exec';
-
-      const requestOptions = {
-        method: "POST",
-        // mode: 'no-cors',
-        headers: {
-          // "Content-Type": "application/json",
-          // "Content-Type": "undefined",
-          "Content-Type": "application/x-www-form-urlencoded"
-          // "Content-Type": "text/plain",
-          // 'contentType': "application/json; charset=UTF-8",
-          // 'accept': 'application/json'
-          // 'accept': 'text/plain'
-        },
-        body: JSON.stringify(model2)
-      };
-      let response = await fetch(url, requestOptions);
-
-      // let data = await response.json();
-
-      // fetch(url)
-      // .then(response => {
-      //   return response.json()
-      // })
-      // .then(data =>{
-      //   console.log(data.status)
-      // });
-
-      // fetch(url, requestOptions)
-      //   .then(response => {
-      //     return response.json()
-      //   })
-      //   .then(data =>{
-      //     console.log(data)
-      // });
-    }
-
-    watch(() => mega.consumption.val, (newVal, prevVal) => {
-      mega.showaddress = newVal.needaddress;
-      mega.showmanager = mega.consumption.val.label == 'Бонусы менеджеры' ? true : false;
-    })
-
-    watch(() => mega.sheet.val, (newVal, prevVal) => {
-      mega.addressOptions = newVal != 'Менеджер.Архив' ? model.addressOptions : model.addressOptionsArchive
-    })
-
-    onMounted(() => {
-      getArchiveAddress()
-    })
-
-    return {
-      mega,
-      showaddressFn,
-      filteraddressFn,
-      filterusersFn,
-      filterconsumptionFn,
-      showofficeFn,
-      showconsumptionFn,
-      abortFilterFn,
-      saveData
-    }
-  }
+  addressOptionsArchive: [],
+  comment: { "val": "" },
+  sum: { "val": "" },
+  consumption: { "val": "" },
+  managerApp: { "val": "" },
+  consumptionOptions: [
+    { 'label': 'Google Аккаунты', 'needaddress': false },
+    { 'label': 'Битрикс Подписки', 'needaddress': false },
+    { 'label': 'Телефония', 'needaddress': false },
+    { 'label': 'Хостинг', 'needaddress': false },
+    { 'label': 'Wazzup', 'needaddress': false },
+    { 'label': 'Битрикс разработка', 'needaddress': false },
+    { 'label': 'Веб разработка', 'needaddress': false },
+    { 'label': 'Налоги на ФОТ', 'needaddress': false },
+    { 'label': 'Страховые взносы ИП', 'needaddress': false },
+    { 'label': 'Казначейство', 'needaddress': false },
+    { 'label': 'Сквозная аналитика', 'needaddress': false },
+    { 'label': 'СЕО продвижение', 'needaddress': false },
+    { 'label': 'Пополнение рекламных кошельков', 'needaddress': false },
+    { 'label': 'Другая реклама', 'needaddress': false },
+    { 'label': 'Подбор персонала', 'needaddress': false },
+    { 'label': 'Лицензия СРО', 'needaddress': false },
+    { 'label': 'Праздники и корпоративы', 'needaddress': false },
+    { 'label': 'Компенсация транспорта', 'needaddress': false },
+    { 'label': 'Аренда офиса', 'needaddress': false },
+    { 'label': 'Нужды офиса', 'needaddress': false },
+    { 'label': 'Командировочные', 'needaddress': false },
+    { 'label': 'ЗП Общий расход', 'needaddress': false },
+    { 'label': 'ЗП МОП', 'needaddress': false },
+    { 'label': 'ЗП ПМ', 'needaddress': false },
+    { 'label': 'ЗП ИНЖ', 'needaddress': false },
+    { 'label': 'ЗП СОГ', 'needaddress': false },
+    { 'label': 'ЗП Приемщики', 'needaddress': false },
+    { 'label': 'ЗП Административный', 'needaddress': false },
+    { 'label': 'Подрядчики административные', 'needaddress': false },
+    { 'label': 'Подрядчики комерческие', 'needaddress': true },
+    { 'label': 'Подрядчики делопроизводства', 'needaddress': true },
+    { 'label': 'Бонусы менеджеры', 'needaddress': false },
+    { 'label': 'Бонусы ПМ', 'needaddress': false },
+    { 'label': 'Дивиденды', 'needaddress': false },
+    { 'label': 'Другие расходы Димы', 'needaddress': false },
+    { 'label': 'Обучающие курсы', 'needaddress': false },
+    { 'label': 'Комиссия за платежи', 'needaddress': false },
+    { 'label': 'Покупка оборудования до 20к', 'needaddress': false },
+    { 'label': 'Покупка оборудования дороже 20к', 'needaddress': false },
+    { 'label': 'Ремонт оборудования', 'needaddress': false },
+    { 'label': 'Для работы согласователей запланированный', 'needaddress': true },
+    { 'label': 'Для работы согласователей внеплановый', 'needaddress': true },
+    { 'label': 'Оплата телеграммы', 'needaddress': false },
+    { 'label': 'Оплата посреднику', 'needaddress': true },
+    { 'label': 'Бонус за отзыв', 'needaddress': false },
+    { 'label': 'Получение документов по объекту', 'needaddress': true },
+    { 'label': 'Выезд инженера', 'needaddress': true },
+    { 'label': 'Обеспечение контракта', 'needaddress': true },
+    { 'label': 'Реферальная программа', 'needaddress': true },
+    { 'label': 'Возврат', 'needaddress': true }
+  ],
+  city: { "val": "" },
+  cityOptions: [
+    "МСК",
+    "ПСБ",
+    "Общий"
+  ],
+  sheet: { "val": "Master" },
+  // sheets: ['Менеджер']
 }
-
-const app = Vue.createApp(vueObject);
-
-app.use(Quasar, {
-  config: {
-    notify: { /* look at QuasarConfOptions from the API card */ },
-    loading: { /* look at QuasarConfOptions from the API card */ }
-  }
-});
-
-Quasar.lang.set(Quasar.lang.ru);
-
-// watch(paymentMethod.value, (val) =>{
-//   console.log(val)
-//   val.val = 'vdnh' ? showoffice=true : showoffice=false
-// })
-// var showoffice = ref(toggelPaymentMethod(paymentMethod))
-// var showoffice = ref(computed(() => { return toggelPaymentMethod(paymentMethod) }));
-// const showoffice = ref(computed(() => { return paymentMethod.value.val == 'cash' ? true : false }));

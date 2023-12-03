@@ -6,91 +6,42 @@ var vueObject = {
   template:
     /*html*/
     `
+    {{mega.user}}
+
   <div class="q-pa-md fit column justify-center">
+
     <!-- first buttons -->
-    <div class="q-gutter-y-xs" style="height:220px">
-      <q-btn-toggle
-        spread
-        v-model = "mega.paymentType.val"
-        toggle-color = "positive"
-        :options= "mega.paymentTypeOptions"
-        v-on:click="showaddressFn();showconsumptionFn()"
-      >
+    <div class="q-gutter-y-xs" style="width:100%"> <!-- style="height:200px" -->
+      <q-btn-toggle spread v-model="mega.paymentType.val" toggle-color="positive" :options="mega.paymentTypeOptions" v-on:click="showaddressFn();showconsumptionFn();showPaymentMethodToFn();showManagerFn()" wrap>
       </q-btn-toggle>
 
-      <q-btn-toggle style="flex-direction: column"
-        spread
-        v-model = "mega.paymentMethod.val"
-        toggle-color = "primary"
-        :options= "mega.paymentMethodOptions"
-        v-on:click="showofficeFn();"
-      >
-      </q-btn-toggle>
-      
-      <!--
-      <q-btn-toggle
-        spread
-        v-model = "mega.paymentMethod.val"
-        toggle-color = "primary"
-        :options= "mega.paymentMethodOptions"
-        v-on:click="showofficeFn();"
-      >
-      </q-btn-toggle>
-      -->
+      <!-- paymentMethod -->
+      <q-select behavior="menu" v-model="mega.paymentMethod.val" :options="mega.paymentMethodOptions" :label="showPaymentMethodTo ? 'Откуда' : 'Способ оплаты'" clearable></q-select>
 
-      <!--
-      <q-btn-toggle v-if="mega.showoffice"
-        spread
-        v-model = "mega.office.val"
-        toggle-color = "accent"
-        :options= "mega.officeOptions"
-      >
-      </q-btn-toggle>
-      -->
+      <!-- paymentMethodTo -->
+      <q-select behavior="menu" v-model="mega.paymentMethodTo.val" :options="mega.paymentMethodOptions" label="Куда" clearable v-if="showPaymentMethodTo"></q-select>
 
-    </div>
-
-    <!-- fields -->
-    <div class="q-gutter-y-xs">
       <!-- comment -->
-      <q-input
-        v-model="mega.comment.val"
-        label="Комментарий"
-        autogrow
-      >
-        <template v-slot:prepend>
-          <q-icon name="chat" />
-        </template>
+      <q-input v-model="mega.comment.val" label="Комментарий" autogrow clearable>
+        <template v-slot:prepend="">
+          <q-icon name="chat">
+        </q-icon></template>
       </q-input>
 
       <!-- sum -->
-      <q-input
-        v-model="mega.sum.val"
-        label='Сумма'
-        mask='# ### ### ###'
-        reverse-fill-mask
-      >
-        <template v-slot:prepend>
-          <q-icon :name="mega.paymenticon"/>
-        </template>
+      <q-input v-model="mega.sum.val" label="Сумма" mask="# ### ### ###" reverse-fill-mask clearable>
+        <template v-slot:prepend="">
+          <q-icon :name="mega.paymenticon">
+        </q-icon></template>
       </q-input>
 
       <!-- consumption -->
-      <q-select
-        v-model="mega.consumption.val"
-        use-input
-        input-debounce="0"
-        label="Тип расхода"
-        :options="mega.consumptionOptions"
-        @filter="filterconsumptionFn"
-        behavior="menu"
-        v-if="mega.showconsumption"
-        >
+      <q-select v-model="mega.consumption.val" use-input input-debounce="0" label="Тип расхода" :options="mega.consumptionOptions" @filter="filterconsumptionFn" behavior="menu" v-if="mega.showconsumption">
 
-        <template v-slot:prepend>
-          <q-icon name="list" />
-        </template>
-        <template v-slot:no-option>
+        <template v-slot:prepend="">
+          <q-icon name="list">
+        </q-icon></template>
+        <template v-slot:no-option="">
           <q-item>
             <q-item-section class="text-grey">
               Не нашел такого, ты уверен(а)?
@@ -100,43 +51,35 @@ var vueObject = {
       </q-select>
       
       <!-- sheets-->
-      <q-select
-        v-model="mega.sheet.val"
-        use-input
-        input-debounce="0"
-        label="Лист"
-        :options="mega.sheets"
-        behavior="menu"
-        v-if="mega.showaddress"
-      >
-        <template v-slot:prepend>
-          <q-icon name="dynamic_feed" />
-        </template>
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              Не нашел такого, ты уверен(а)?
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
+      <!--
+        <q-select
+          v-model="mega.sheet.val"
+          use-input
+          input-debounce="0"
+          label="Лист"
+          :options="mega.sheets"
+          behavior="menu"
+          v-if="mega.showaddress"
+        >
+          <template v-slot:prepend>
+            <q-icon name="dynamic_feed" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                Не нашел такого, ты уверен(а)?
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      -->
 
       <!-- address-->
-      <q-select
-        v-model="mega.address.val"
-        use-input
-        input-debounce="0"
-        label="Адрес"
-        :options="mega.addressOptions"
-        @filter="filteraddressFn"
-        @filter-abort="abortFilterFn"
-        behavior="menu"
-        v-if="mega.showaddress"
-      >
-        <template v-slot:prepend>
-          <q-icon name="location_on" />
-        </template>
-        <template v-slot:no-option>
+      <q-select v-model="mega.address.val" use-input input-debounce="0" label="Адрес" :options="mega.addressOptions" @filter="filteraddressFn" @filter-abort="abortFilterFn" behavior="menu" v-if="mega.showaddress">
+        <template v-slot:prepend="">
+          <q-icon name="location_on">
+        </q-icon></template>
+        <template v-slot:no-option="">
           <q-item>
             <q-item-section class="text-grey">
               Не нашел такого, ты уверен(а)?
@@ -145,21 +88,27 @@ var vueObject = {
         </template>
       </q-select>
 
+      <!-- city-->
+      <q-select v-model="mega.city.val" use-input input-debounce="0" label="Город" :options="mega.cityOptions" @filter="filterCity" @filter-abort="abortFilterFn" behavior="menu" v-if="mega.showaddress">
+        <template v-slot:prepend="">
+          <q-icon name="location_city">
+        </q-icon></template>
+        <template v-slot:no-option="">
+          <q-item>
+            <q-item-section class="text-grey">
+              Не нашел такого, ты уверен(а)?
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+
+
        <!-- manager -->
-       <q-select
-       v-model="mega.manager.val"
-       use-input
-       input-debounce="0"
-       label="Менеджер"
-       :options="mega.userOptions"
-       behavior="menu"
-       @filter="filterusersFn"
-       v-if="mega.showmanager"
-       >
-       <template v-slot:prepend>
-         <q-icon name="list" />
-       </template>
-       <template v-slot:no-option>
+       <q-select v-model="mega.manager.val" use-input input-debounce="0" label="Менеджер" :options="mega.userOptions" behavior="menu" @filter="filterusersFn" v-if="mega.showmanager">
+       <template v-slot:prepend="">
+         <q-icon name="list">
+       </q-icon></template>
+       <template v-slot:no-option="">
          <q-item>
            <q-item-section class="text-grey">
              Не нашел такого, ты уверен(а)?
@@ -169,29 +118,32 @@ var vueObject = {
      </q-select>
       
       <!-- button -->
-      <q-btn color="primary" label="Добавить" class="fit" @click="saveData()" v-if="mega.showbutton"></q-btn>
+      <q-btn class="fit" color="primary" label="Добавить" @click="saveData()" v-if="mega.showbutton"></q-btn>
 
     </div>
   </div>
   `
   ,
   setup() {
+    var showPaymentMethodTo = ref(false);
     var mega = reactive({
       paymentMethod: model.paymentMethod,
+      paymentMethodTo: model.paymentMethodTo,
+
       paymentMethodOptions: model.paymentMethodOptions,
       paymentTypeOptions: model.paymentTypeOptions,
       paymentType: model.paymentType,
-      office: model.office,
-      officeOptions: model.officeOptions,
-      showoffice: false,
 
       address: model.address,
       addressOptions: model.addressOptions,
       showaddress: false,
 
+      city: model.city,
+      cityOptions: model.cityOptions,
+
       paymenticon: 'payments',
       consumption: model.consumption,
-      manager: model.manager,
+      manager: model.managerApp,
 
       consumptionOptions: model.consumptionOptions.map(item => item.label),
       userOptions: model.userOptions,
@@ -201,23 +153,62 @@ var vueObject = {
 
       sum: model.sum,
       comment: model.comment,
-      showbutton: computed(() => { return (mega.paymentMethod.val && mega.paymentType.val) ? true : false }),
+      showbutton: computed(() => { return (mega.paymentMethod.val && mega.paymentType.val ) ? true : false }),
 
       sheet: model.sheet,
-      sheets: model.sheets
+      user: model.user
+      // sheets: model.sheets
       // sheetselected: computed(() => {return (mega.sheet.val != 'Менеджер.Архив') ? model.addressOptions : model.addressOptionsArchive}),
     });
+
+    // function filteraddressFn(val, update) {
+    //   if (val === '') {
+    //     update(() => {
+    //       mega.addressOptions = mega.sheet.val != 'Менеджер.Архив' ? model.addressOptions : model.addressOptionsArchive;
+    //     })
+    //     return;
+    //   }
+    //   update(() => {
+    //     const needle = val.toLowerCase()
+    //     mega.addressOptions = (mega.sheet.val != 'Менеджер.Архив' ? model.addressOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1) : model.addressOptionsArchive.filter(v => v.label.toLowerCase().indexOf(needle) > -1));
+    //   })
+    // }
 
     function filteraddressFn(val, update) {
       if (val === '') {
         update(() => {
-          mega.addressOptions = mega.sheet.val != 'Менеджер.Архив' ? model.addressOptions : model.addressOptionsArchive;
+          mega.addressOptions = model.addressOptions;
         })
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        mega.addressOptions = (mega.sheet.val != 'Менеджер.Архив' ? model.addressOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1) : model.addressOptionsArchive.filter(v => v.label.toLowerCase().indexOf(needle) > -1));
+        mega.addressOptions = model.addressOptions.filter(v => {
+          let arneed = needle.split(' ');
+          if (arneed.every(ar => v.label.toLowerCase().includes(ar))) {
+            return v
+          }
+        });
+
+      })
+    }
+
+    function filterCity(val, update) {
+      if (val === '') {
+        update(() => {
+          mega.cityOptions = model.cityOptions;
+        })
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        mega.cityOptions = model.cityOptions.filter(v => {
+          let arneed = needle.split(' ');
+          if (arneed.every(ar => v.label.toLowerCase().includes(ar))) {
+            return v
+          }
+        });
+
       })
     }
 
@@ -265,17 +256,20 @@ var vueObject = {
       model.addressOptionsArchive = data.address;
     }
 
-    function showofficeFn() {
-      mega.showoffice = mega.paymentMethod.val == 'Нал' ? true : false;
-      mega.paymenticon = mega.paymentMethod.val == 'Нал' ? 'payments' : 'payment';
-    }
-
     function showaddressFn() {
       mega.showaddress = mega.paymentType.val == 'Приход' ? true : false;
     }
 
     function showconsumptionFn() {
       mega.showconsumption = mega.paymentType.val == 'Расход' ? true : false;
+    }
+
+    function showPaymentMethodToFn() {
+      showPaymentMethodTo.value = mega.paymentType.val == 'Перенос' ? true : false;
+    }
+
+    function showManagerFn() {
+      mega.showmanager = mega.paymentType.val == 'Бонус' ? true : false;
     }
 
     async function saveData() {
@@ -292,13 +286,11 @@ var vueObject = {
         }
       });
 
-      mega.sheet.val = 'Менеджер';
-      showofficeFn();
+      mega.sheet.val = 'Master';
       showconsumptionFn();
       showaddressFn();
 
-      // var url = 'https://script.google.com/macros/s/AKfycbzUgwNF8Tqs3tmw7sV3ZxWKBDN5bUJ2mfr7mUR5MLrWeCMIvo3GSS4ZfKUbYZN5eXRY/exec';
-      var url = 'https://script.google.com/macros/s/AKfycbxmMJGGfMm8WeOzFsk9gSCgvfE3TtOL1ERB00cQR0waTYtV0AAduN-7X3fgyu59btG9lQ/exec';
+      var url = 'https://script.google.com/macros/s/AKfycbxUdyBL0BjJwEGkEJPke5moCMh1NhY661CfUQCWT2KGc0PllVNTwumQ5Kiiuo-3ykrV/exec';
 
       const requestOptions = {
         method: "POST",
@@ -337,25 +329,20 @@ var vueObject = {
 
     watch(() => mega.consumption.val, (newVal, prevVal) => {
       mega.showaddress = newVal.needaddress;
-      mega.showmanager = mega.consumption.val.label == 'Бонусы менеджеры' ? true : false;
-    })
-
-    watch(() => mega.sheet.val, (newVal, prevVal) => {
-      mega.addressOptions = newVal != 'Менеджер.Архив' ? model.addressOptions : model.addressOptionsArchive
-    })
-
-    onMounted(() => {
-      getArchiveAddress()
+      mega.showmanager = mega.consumption.val.label == 'Бонусы менеджеры' || mega.consumption.val.label == 'Бонусы ПМ' ? true : false;
     })
 
     return {
       mega,
+      showPaymentMethodTo,
+      showManagerFn,
       showaddressFn,
       filteraddressFn,
       filterusersFn,
+      filterCity,
       filterconsumptionFn,
-      showofficeFn,
       showconsumptionFn,
+      showPaymentMethodToFn,
       abortFilterFn,
       saveData
     }

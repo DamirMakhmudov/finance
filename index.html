@@ -6,20 +6,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" type="text/css">
   <link href="https://cdn.jsdelivr.net/npm/quasar@2.0.0-beta.9/dist/quasar.prod.css" rel="stylesheet" type="text/css">
-  
+  <script>
+      if (window.trustedTypes && window.trustedTypes.createPolicy) {
+        window.trustedTypes.createPolicy('default', {
+          createHTML: string => string,
+          createScriptURL: string => string,
+          createScript: string => string,
+        });
+      }
+  </script>
   <title>Finance</title>
 </head>
 <body>
   <div id="fin-app"></div>
 
   <script>
-    /* backend functions from spreadsheet*/
+    // var model = JSON.parse(<?= getModelFinance(Session.getActiveUser().getEmail()) ?>);
+
+    // function saveDataJS(){
+    //   google.script.run.saveDataGSFinance(JSON.stringify(model));
+    // }
   </script>
 
   <!-- Import Vue -->
   <script src="https://unpkg.com/vue@next"></script>
-
-  <!-- Import Quasar -->
+  
+    <!-- Import Quasar -->
   <script src="https://cdn.jsdelivr.net/npm/quasar@2.0.0-beta.9/dist/quasar.umd.prod.js"></script>
 
   <!-- Import JS -->
