@@ -6,8 +6,6 @@ var vueObject = {
   template:
     /*html*/
     `
-    {{mega.user}}
-
   <div class="q-pa-md fit column justify-center">
 
     <!-- first buttons -->
@@ -129,10 +127,10 @@ var vueObject = {
     var mega = reactive({
       paymentMethod: model.paymentMethod,
       paymentMethodTo: model.paymentMethodTo,
-
       paymentMethodOptions: model.paymentMethodOptions,
-      paymentTypeOptions: model.paymentTypeOptions,
+
       paymentType: model.paymentType,
+      paymentTypeOptions: model.paymentTypeOptions,
 
       address: model.address,
       addressOptions: model.addressOptions,
@@ -142,21 +140,43 @@ var vueObject = {
       cityOptions: model.cityOptions,
 
       paymenticon: 'payments',
-      consumption: model.consumption,
+
       manager: model.managerApp,
-
-      consumptionOptions: model.consumptionOptions.map(item => item.label),
-      userOptions: model.userOptions,
-
-      showconsumption: false,
       showmanager: false,
+
+      consumption: model.consumption,
+      consumptionOptions: model.consumptionOptions.map(item => item.label),
+      showconsumption: false,
+
+      userOptions: model.userOptions,
 
       sum: model.sum,
       comment: model.comment,
-      showbutton: computed(() => { return (mega.paymentMethod.val && mega.paymentType.val ) ? true : false }),
+
+      // showbutton: computed(() => { return (mega.paymentMethod.val && mega.paymentType.val ) ? true : false }),
+      showbutton: computed(() => {
+        switch (mega.paymentType.val) {
+          case 'Приход':
+            return (mega.paymentMethod.val && mega.paymentType.val && mega.sum.val && mega.address.val && mega.city.val);
+          case 'Расход':
+            if (mega.consumption.val && mega.consumption.val.needaddress == true) {
+              return (mega.paymentMethod.val && mega.paymentType.val && mega.sum.val && mega.address.val && mega.city.val);
+            } else {
+              return (mega.paymentMethod.val && mega.paymentType.val && mega.sum.val);
+            }
+          case 'Перенос':
+            return (mega.paymentMethod.val && mega.paymentMethodTo.val && mega.sum.val);
+          case 'Бонус':
+            return (mega.paymentMethod.val && mega.sum.val && mega.manager.val);
+          default:
+            return false
+        }
+
+      }),
 
       sheet: model.sheet,
       user: model.user
+
       // sheets: model.sheets
       // sheetselected: computed(() => {return (mega.sheet.val != 'Менеджер.Архив') ? model.addressOptions : model.addressOptionsArchive}),
     });
