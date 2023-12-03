@@ -6,18 +6,19 @@ var vueObject = {
   template:
     /*html*/
     `
+    {{mega}}
   <div class="q-pa-md fit column justify-center">
 
     <!-- first buttons -->
     <div class="q-gutter-y-xs" style="width:100%"> <!-- style="height:200px" -->
-      <q-btn-toggle spread v-model="mega.paymentType.val" toggle-color="positive" :options="mega.paymentTypeOptions" v-on:click="showaddressFn();showconsumptionFn();showPaymentMethodToFn();showManagerFn()" wrap>
+      <q-btn-toggle spread v-model="mega.paymentType.val" toggle-color="positive" :options="megaview.paymentTypeOptions" v-on:click="showaddressFn();showconsumptionFn();showPaymentMethodToFn();showManagerFn()" wrap>
       </q-btn-toggle>
 
       <!-- paymentMethod -->
-      <q-select behavior="menu" v-model="mega.paymentMethod.val" :options="mega.paymentMethodOptions" :label="showPaymentMethodTo ? 'Откуда' : 'Способ оплаты'" clearable></q-select>
+      <q-select behavior="menu" v-model="mega.paymentMethod.val" :options="megaview.paymentMethodOptions" :label="showPaymentMethodTo ? 'Откуда' : 'Способ оплаты'" clearable></q-select>
 
       <!-- paymentMethodTo -->
-      <q-select behavior="menu" v-model="mega.paymentMethodTo.val" :options="mega.paymentMethodOptions" label="Куда" clearable v-if="showPaymentMethodTo"></q-select>
+      <q-select behavior="menu" v-model="mega.paymentMethodTo.val" :options="megaview.paymentMethodOptions" label="Куда" clearable v-if="showPaymentMethodTo"></q-select>
 
       <!-- comment -->
       <q-input v-model="mega.comment.val" label="Комментарий" autogrow clearable>
@@ -34,7 +35,7 @@ var vueObject = {
       </q-input>
 
       <!-- consumption -->
-      <q-select v-model="mega.consumption.val" use-input input-debounce="0" label="Тип расхода" :options="mega.consumptionOptions" @filter="filterconsumptionFn" behavior="menu" v-if="mega.showconsumption">
+      <q-select v-model="mega.consumption.val" use-input input-debounce="0" label="Тип расхода" :options="megaview.consumptionOptions" @filter="filterconsumptionFn" behavior="menu" v-if="mega.showconsumption">
 
         <template v-slot:prepend="">
           <q-icon name="list">
@@ -73,7 +74,7 @@ var vueObject = {
       -->
 
       <!-- address-->
-      <q-select v-model="mega.address.val" use-input input-debounce="0" label="Адрес" :options="mega.addressOptions" @filter="filteraddressFn" @filter-abort="abortFilterFn" behavior="menu" v-if="mega.showaddress">
+      <q-select v-model="mega.address.val" use-input input-debounce="0" label="Адрес" :options="megaview.addressOptions" @filter="filteraddressFn" @filter-abort="abortFilterFn" behavior="menu" v-if="mega.showaddress">
         <template v-slot:prepend="">
           <q-icon name="location_on">
         </q-icon></template>
@@ -87,7 +88,7 @@ var vueObject = {
       </q-select>
 
       <!-- city-->
-      <q-select v-model="mega.city.val" use-input input-debounce="0" label="Город" :options="mega.cityOptions" @filter="filterCity" @filter-abort="abortFilterFn" behavior="menu" v-if="mega.showaddress">
+      <q-select v-model="mega.city.val" use-input input-debounce="0" label="Город" :options="megaview.cityOptions" @filter="filterCity" @filter-abort="abortFilterFn" behavior="menu" v-if="mega.showaddress">
         <template v-slot:prepend="">
           <q-icon name="location_city">
         </q-icon></template>
@@ -102,7 +103,7 @@ var vueObject = {
 
 
        <!-- manager -->
-       <q-select v-model="mega.manager.val" use-input input-debounce="0" label="Менеджер" :options="mega.userOptions" behavior="menu" @filter="filterusersFn" v-if="mega.showmanager">
+       <q-select v-model="mega.manager.val" use-input input-debounce="0" label="Менеджер" :options="megaview.userOptions" behavior="menu" @filter="filterusersFn" v-if="mega.showmanager">
        <template v-slot:prepend="">
          <q-icon name="list">
        </q-icon></template>
@@ -124,20 +125,29 @@ var vueObject = {
   ,
   setup() {
     var showPaymentMethodTo = ref(false);
+    var megaview = reactive({
+      paymentMethodOptions: model.paymentMethodOptions,
+      paymentTypeOptions: model.paymentTypeOptions,
+      addressOptions: model.addressOptions,
+      cityOptions: model.cityOptions,
+      consumptionOptions: model.consumptionOptions.map(item => item.label),
+      userOptions: model.userOptions
+    });
+
     var mega = reactive({
       paymentMethod: model.paymentMethod,
       paymentMethodTo: model.paymentMethodTo,
-      paymentMethodOptions: model.paymentMethodOptions,
+      // paymentMethodOptions: model.paymentMethodOptions,
 
       paymentType: model.paymentType,
-      paymentTypeOptions: model.paymentTypeOptions,
+      // paymentTypeOptions: model.paymentTypeOptions,
 
       address: model.address,
-      addressOptions: model.addressOptions,
+      // addressOptions: model.addressOptions,
       showaddress: false,
 
       city: model.city,
-      cityOptions: model.cityOptions,
+      // cityOptions: model.cityOptions,
 
       paymenticon: 'payments',
 
@@ -145,10 +155,10 @@ var vueObject = {
       showmanager: false,
 
       consumption: model.consumption,
-      consumptionOptions: model.consumptionOptions.map(item => item.label),
+      // consumptionOptions: model.consumptionOptions.map(item => item.label),
       showconsumption: false,
 
-      userOptions: model.userOptions,
+      // userOptions: model.userOptions,
 
       sum: model.sum,
       comment: model.comment,
@@ -197,13 +207,13 @@ var vueObject = {
     function filteraddressFn(val, update) {
       if (val === '') {
         update(() => {
-          mega.addressOptions = model.addressOptions;
+          megaview.addressOptions = model.addressOptions;
         })
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        mega.addressOptions = model.addressOptions.filter(v => {
+        megaview.addressOptions = model.addressOptions.filter(v => {
           let arneed = needle.split(' ');
           if (arneed.every(ar => v.label.toLowerCase().includes(ar))) {
             return v
@@ -216,13 +226,13 @@ var vueObject = {
     function filterCity(val, update) {
       if (val === '') {
         update(() => {
-          mega.cityOptions = model.cityOptions;
+          megaview.cityOptions = model.cityOptions;
         })
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        mega.cityOptions = model.cityOptions.filter(v => {
+        megaview.cityOptions = model.cityOptions.filter(v => {
           let arneed = needle.split(' ');
           if (arneed.every(ar => v.label.toLowerCase().includes(ar))) {
             return v
@@ -235,26 +245,26 @@ var vueObject = {
     function filterconsumptionFn(val, update, abort) {
       if (val === '') {
         update(() => {
-          mega.consumptionOptions = model.consumptionOptions
+          megaview.consumptionOptions = model.consumptionOptions
         });
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        mega.consumptionOptions = model.consumptionOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+        megaview.consumptionOptions = model.consumptionOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
       })
     }
 
     function filterusersFn(val, update, abort) {
       if (val === '') {
         update(() => {
-          mega.userOptions = model.userOptions
+          megaview.userOptions = model.userOptions
         });
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        mega.userOptions = model.userOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        megaview.userOptions = model.userOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
       })
     }
 
@@ -293,12 +303,13 @@ var vueObject = {
     }
 
     async function saveData() {
-      model.mode = 'finance';
-      model.sum.val = +model.sum.val.replace(/ /g, '');
-      model.consumption.val = model.consumption.val.label;
-      model.address.val = model.address.val.label;
+      // model.mode = 'finance';
+      // model.sum.val = +model.sum.val.replace(/ /g, '');
+      // model.consumption.val = model.consumption.val.label;
+      // model.address.val = model.address.val.label;
 
-      let model2 = JSON.parse(JSON.stringify(model));
+      // let model2 = JSON.parse(JSON.stringify(model));
+      let m2 = JSON.parse(JSON.stringify(mega));
 
       Object.keys(mega).forEach(key => {
         if (mega[key].hasOwnProperty('val')) {
@@ -309,8 +320,8 @@ var vueObject = {
       mega.sheet.val = 'Master';
       showconsumptionFn();
       showaddressFn();
-
-      var url = 'https://script.google.com/macros/s/AKfycbxUdyBL0BjJwEGkEJPke5moCMh1NhY661CfUQCWT2KGc0PllVNTwumQ5Kiiuo-3ykrV/exec';
+      
+      var url = 'https://script.google.com/macros/s/AKfycbzwN41qL0j_hwItg-NW_X_4V4K9MojySEUrOk8Nop0qfhE_3bNPZH5VQr7FeWQZL2lO/exec';
 
       const requestOptions = {
         method: "POST",
@@ -324,27 +335,9 @@ var vueObject = {
           // 'accept': 'application/json'
           // 'accept': 'text/plain'
         },
-        body: JSON.stringify(model2)
+        body: JSON.stringify(m2)
       };
       let response = await fetch(url, requestOptions);
-
-      // let data = await response.json();
-
-      // fetch(url)
-      // .then(response => {
-      //   return response.json()
-      // })
-      // .then(data =>{
-      //   console.log(data.status)
-      // });
-
-      // fetch(url, requestOptions)
-      //   .then(response => {
-      //     return response.json()
-      //   })
-      //   .then(data =>{
-      //     console.log(data)
-      // });
     }
 
     watch(() => mega.consumption.val, (newVal, prevVal) => {
@@ -355,6 +348,7 @@ var vueObject = {
     return {
       mega,
       showPaymentMethodTo,
+      megaview,
       showManagerFn,
       showaddressFn,
       filteraddressFn,
