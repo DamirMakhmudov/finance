@@ -215,7 +215,7 @@ var vueObject = {
         const needle = val.toLowerCase()
         megaview.addressOptions = model.addressOptions.filter(v => {
           let arneed = needle.split(' ');
-          if (arneed.every(ar => v.label.toLowerCase().includes(ar))) {
+          if (arneed.every(ar => v.toLowerCase().includes(ar))) {
             return v
           }
         });
@@ -234,7 +234,7 @@ var vueObject = {
         const needle = val.toLowerCase()
         megaview.cityOptions = model.cityOptions.filter(v => {
           let arneed = needle.split(' ');
-          if (arneed.every(ar => v.label.toLowerCase().includes(ar))) {
+          if (arneed.every(ar => v.toLowerCase().includes(ar))) {
             return v
           }
         });
@@ -307,8 +307,8 @@ var vueObject = {
       // model.sum.val = +model.sum.val.replace(/ /g, '');
       // model.consumption.val = model.consumption.val.label;
       // model.address.val = model.address.val.label;
-
       // let model2 = JSON.parse(JSON.stringify(model));
+
       let m2 = JSON.parse(JSON.stringify(mega));
 
       Object.keys(mega).forEach(key => {
@@ -316,12 +316,13 @@ var vueObject = {
           mega[key].val = ""
         }
       });
-
+      
+      m2.mode = 'finance';
       mega.sheet.val = 'Master';
       showconsumptionFn();
       showaddressFn();
       
-      var url = 'https://script.google.com/macros/s/AKfycbzwN41qL0j_hwItg-NW_X_4V4K9MojySEUrOk8Nop0qfhE_3bNPZH5VQr7FeWQZL2lO/exec';
+      var url = 'https://script.google.com/macros/s/AKfycbzbrg3TqpoBGvO_UETLBTiYV4mROjCYw0ehqmNMekC-ZD41BvCHiQqJ8DsN5PJkWwVx1w/exec';
 
       const requestOptions = {
         method: "POST",
@@ -337,6 +338,7 @@ var vueObject = {
         },
         body: JSON.stringify(m2)
       };
+      console.log(m2);
       let response = await fetch(url, requestOptions);
     }
 
