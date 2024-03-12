@@ -6,7 +6,8 @@ var vueObject = {
   template:
     /*html*/
     `
-    {{mega}}
+  {{mega.user.val}}
+
   <div class="q-pa-md fit column justify-center">
 
     <!-- first buttons -->
@@ -88,7 +89,7 @@ var vueObject = {
       </q-select>
 
       <!-- city-->
-      <q-select v-model="mega.city.val" use-input input-debounce="0" label="Город" :options="megaview.cityOptions" @filter="filterCity" @filter-abort="abortFilterFn" behavior="menu" v-if="mega.showaddress">
+      <q-select v-model="mega.city.val" use-input input-debounce="0" label="Город" :options="megaview.cityOptions" @filter="filterCity" @filter-abort="abortFilterFn" behavior="menu" >
         <template v-slot:prepend="">
           <q-icon name="location_city">
         </q-icon></template>
@@ -100,7 +101,6 @@ var vueObject = {
           </q-item>
         </template>
       </q-select>
-
 
        <!-- manager -->
        <q-select v-model="mega.manager.val" use-input input-debounce="0" label="Менеджер" :options="megaview.userOptions" behavior="menu" @filter="filterusersFn" v-if="mega.showmanager">
@@ -126,43 +126,34 @@ var vueObject = {
   setup() {
     var showPaymentMethodTo = ref(false);
     var megaview = reactive({
-      paymentMethodOptions: model.paymentMethodOptions,
-      paymentTypeOptions: model.paymentTypeOptions,
-      addressOptions: model.addressOptions,
-      cityOptions: model.cityOptions,
-      consumptionOptions: model.consumptionOptions.map(item => item.label),
-      userOptions: model.userOptions
+      paymentMethodOptions: view.paymentMethodOptions,
+      paymentTypeOptions: view.paymentTypeOptions,
+      addressOptions: view.addressOptions,
+      cityOptions: view.cityOptions,
+      consumptionOptions: view.consumptionOptions.map(item => item.label),
+      userOptions: view.userOptions
     });
 
     var mega = reactive({
       paymentMethod: model.paymentMethod,
       paymentMethodTo: model.paymentMethodTo,
       // paymentMethodOptions: model.paymentMethodOptions,
-
       paymentType: model.paymentType,
       // paymentTypeOptions: model.paymentTypeOptions,
-
       address: model.address,
       // addressOptions: model.addressOptions,
       showaddress: false,
-
       city: model.city,
       // cityOptions: model.cityOptions,
-
       paymenticon: 'payments',
-
       manager: model.managerApp,
       showmanager: false,
-
       consumption: model.consumption,
       // consumptionOptions: model.consumptionOptions.map(item => item.label),
       showconsumption: false,
-
       // userOptions: model.userOptions,
-
       sum: model.sum,
       comment: model.comment,
-
       // showbutton: computed(() => { return (mega.paymentMethod.val && mega.paymentType.val ) ? true : false }),
       showbutton: computed(() => {
         switch (mega.paymentType.val) {
@@ -183,37 +174,22 @@ var vueObject = {
         }
 
       }),
-
       sheet: model.sheet,
       user: model.user
-
       // sheets: model.sheets
-      // sheetselected: computed(() => {return (mega.sheet.val != 'Менеджер.Архив') ? model.addressOptions : model.addressOptionsArchive}),
+      // sheetselected: computed(() => {return (mega.sheet.val != 'Менеджер.Архив') ? view.addressOptions : view.addressOptionsArchive}),
     });
-
-    // function filteraddressFn(val, update) {
-    //   if (val === '') {
-    //     update(() => {
-    //       mega.addressOptions = mega.sheet.val != 'Менеджер.Архив' ? model.addressOptions : model.addressOptionsArchive;
-    //     })
-    //     return;
-    //   }
-    //   update(() => {
-    //     const needle = val.toLowerCase()
-    //     mega.addressOptions = (mega.sheet.val != 'Менеджер.Архив' ? model.addressOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1) : model.addressOptionsArchive.filter(v => v.label.toLowerCase().indexOf(needle) > -1));
-    //   })
-    // }
 
     function filteraddressFn(val, update) {
       if (val === '') {
         update(() => {
-          megaview.addressOptions = model.addressOptions;
+          megaview.addressOptions = view.addressOptions;
         })
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        megaview.addressOptions = model.addressOptions.filter(v => {
+        megaview.addressOptions = view.addressOptions.filter(v => {
           let arneed = needle.split(' ');
           if (arneed.every(ar => v.toLowerCase().includes(ar))) {
             return v
@@ -226,13 +202,13 @@ var vueObject = {
     function filterCity(val, update) {
       if (val === '') {
         update(() => {
-          megaview.cityOptions = model.cityOptions;
+          megaview.cityOptions = view.cityOptions;
         })
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        megaview.cityOptions = model.cityOptions.filter(v => {
+        megaview.cityOptions = view.cityOptions.filter(v => {
           let arneed = needle.split(' ');
           if (arneed.every(ar => v.toLowerCase().includes(ar))) {
             return v
@@ -245,26 +221,26 @@ var vueObject = {
     function filterconsumptionFn(val, update, abort) {
       if (val === '') {
         update(() => {
-          megaview.consumptionOptions = model.consumptionOptions
+          megaview.consumptionOptions = view.consumptionOptions
         });
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        megaview.consumptionOptions = model.consumptionOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+        megaview.consumptionOptions = view.consumptionOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
       })
     }
 
     function filterusersFn(val, update, abort) {
       if (val === '') {
         update(() => {
-          megaview.userOptions = model.userOptions
+          megaview.userOptions = view.userOptions
         });
         return;
       }
       update(() => {
         const needle = val.toLowerCase()
-        megaview.userOptions = model.userOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        megaview.userOptions = view.userOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
       })
     }
 
@@ -283,7 +259,7 @@ var vueObject = {
       };
       let response = await fetch(url, requestOptions);
       let data = await response.json();
-      model.addressOptionsArchive = data.address;
+      view.addressOptionsArchive = data.address;
     }
 
     function showaddressFn() {
@@ -304,7 +280,7 @@ var vueObject = {
 
     async function saveData() {
       // model.mode = 'finance';
-      // model.sum.val = +model.sum.val.replace(/ /g, '');
+      model.sum.val = +model.sum.val.replace(/ /g, ''); //раскоментил
       // model.consumption.val = model.consumption.val.label;
       // model.address.val = model.address.val.label;
       // let model2 = JSON.parse(JSON.stringify(model));
@@ -316,12 +292,13 @@ var vueObject = {
           mega[key].val = ""
         }
       });
-      
+
       m2.mode = 'finance';
+
       mega.sheet.val = 'Master';
       showconsumptionFn();
       showaddressFn();
-      
+
       var url = 'https://script.google.com/macros/s/AKfycbzbrg3TqpoBGvO_UETLBTiYV4mROjCYw0ehqmNMekC-ZD41BvCHiQqJ8DsN5PJkWwVx1w/exec';
 
       const requestOptions = {
