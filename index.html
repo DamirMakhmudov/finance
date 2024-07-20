@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -20,6 +21,17 @@
     <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
     <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Iconsicon.style=Two+tone" rel="stylesheet" type="text/css"> -->
     <script>
+=======
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/quasar@2.0.0-beta.9/dist/quasar.prod.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald&family=Rowdies:wght@300&family=Ubuntu&display=swap" rel="stylesheet">
+  <script>
+>>>>>>> refs/remotes/origin/master
       if (window.trustedTypes && window.trustedTypes.createPolicy) {
         window.trustedTypes.createPolicy("default", {
           createHTML: (string) => string,
@@ -47,9 +59,14 @@
   </style>
 
   <script>
+<<<<<<< HEAD
     // var model = JSON.parse(<?= getModel() ?>);
     var view = {};
     // var spec = JSON.parse(<?= getSpec() ?>);
+=======
+    // var model = JSON.parse(<?= getModelFinance(Session.getActiveUser().getEmail()) ?>);
+    // var view = JSON.parse(<?= getViewFinance() ?>);
+>>>>>>> refs/remotes/origin/master
 
     // function startJS(){
     //   google.script.run.updateFilterCondition1();
@@ -72,6 +89,7 @@
     }
   </script>
 
+<<<<<<< HEAD
   <body>
     <div id="app"></div>
 
@@ -93,3 +111,21 @@
     </script>
   </body>
 </html>
+=======
+  <!-- Import Vue -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <!-- Import Quasar -->
+  <script src="https://cdn.jsdelivr.net/npm/quasar@2.0.0-beta.9/dist/quasar.umd.prod.js"></script>
+
+  <!-- Import JS -->
+  <script src="./data.js"></script>
+
+  <!-- Import components -->
+  <script src="./root.js"></script>
+  
+  <!-- Mount app -->
+  <script>const vm = app.mount('#fin-app')</script>
+</body>
+</html>
+>>>>>>> refs/remotes/origin/master
