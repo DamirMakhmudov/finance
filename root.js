@@ -19,20 +19,14 @@ var vueObject = {
   {{mega.user.val}}
 
   <div class="q-pa-md fit column justify-center">
-
     <!-- first buttons -->
     <div class="q-gutter-y-xs" style="width:100%"> <!-- style="height:200px" -->
-      <!-- <q-btn-toggle
-      spread v-model="mega.paymentType.val" toggle-color="positive" 
-      :options="megaview.paymentTypeOptions" 
-      v-on:click="showaddressFn();showconsumptionFn();showPaymentMethodToFn();showManagerFn()" wrap
-      >
-      </q-btn-toggle> -->
-
-<button @click="addval()">dd</button>
+      
+      <!-- paymentType -->
+      <q-btn-toggle spread v-model="mega.paymentType.val" toggle-color="positive" :options="megaview.paymentTypeOptions" v-on:click="showaddressFn();showconsumptionFn();showPaymentMethodToFn();showManagerFn()" wrap></q-btn-toggle>
 
       <!-- paymentMethod -->
-      <q-select behavior="menu" v-model="mega.paymentMethod.val" @filter="filterpaymentMethod" :options="megaview.paymentMethodOptions" :label="showPaymentMethodTo ? 'Откуда' : 'Способ оплаты2'" clearable></q-select>
+      <q-select behavior="menu" v-model="mega.paymentMethod.val" @filter="filterpaymentMethod" :options="megaview.paymentMethodOptions" :label="showPaymentMethodTo ? 'Откуда' : 'Способ оплаты'" clearable></q-select>
 
       <!-- paymentMethodTo -->
       <q-select behavior="menu" v-model="mega.paymentMethodTo.val" :options="megaview.paymentMethodOptions" label="Куда" clearable v-if="showPaymentMethodTo"></q-select>
@@ -142,7 +136,12 @@ var vueObject = {
   setup() {
     const $q = useQuasar();
     var showPaymentMethodTo = ref(false);
-    var megaview = reactive(view);
+    var megaview = ref(view);
+    var mmm = ref([
+      { label: 'One', value: 'one' },
+      { label: 'Two', value: 'two' },
+      { label: 'Three', value: 'three' }
+    ]);
     // var megaview = reactive({
     //   paymentMethodOptions: view.paymentMethodOptions,
     //   paymentTypeOptions: view.paymentTypeOptions,
@@ -151,8 +150,8 @@ var vueObject = {
     //   consumptionOptions: view.consumptionOptions.map(item => item.label),
     //   userOptions: view.userOptions
     // });
-    var WEB_URL =
-      "https://script.google.com/macros/s/AKfycbzbrg3TqpoBGvO_UETLBTiYV4mROjCYw0ehqmNMekC-ZD41BvCHiQqJ8DsN5PJkWwVx1w/exec";
+
+    var WEB_URL = "https://script.google.com/macros/s/AKfycbzbrg3TqpoBGvO_UETLBTiYV4mROjCYw0ehqmNMekC-ZD41BvCHiQqJ8DsN5PJkWwVx1w/exec";
 
     var mega = reactive({
       paymentMethod: model.paymentMethod,
@@ -218,6 +217,14 @@ var vueObject = {
       // sheetselected: computed(() => {return (mega.sheet.val != 'Менеджер.Архив') ? view.addressOptions : view.addressOptionsArchive}),
     });
 
+    function addData() {
+      l(megaview.value.paymentTypeOptions);
+      megaview.value.paymentTypeOptions = [
+        { label: 'a', value: 'a' },
+        { label: 'b', value: 'b' }
+      ]
+    }
+
     onBeforeMount(() => {
       l("onBeforeMount");
       getView();
@@ -225,11 +232,6 @@ var vueObject = {
 
     function l(text) {
       console.log(text);
-    }
-
-    function addval() {
-      console.log(megaview.value.paymentMethodOptions);
-      // megaview.value.paymentMethodOptions = view.paymentMethodOptions
     }
 
     async function getView() {
@@ -260,8 +262,7 @@ var vueObject = {
       }).then((resp) => resp.json());
       view = response;
       l(view)
-      //megaview.value = response;
-      // l(megaview.value.paymentMethodOptions)
+      megaview.value = response;
       $q.loading.hide();
     }
 
@@ -453,7 +454,8 @@ var vueObject = {
       showPaymentMethodToFn,
       abortFilterFn,
       saveData,
-      addval
+      addData,
+      mmm
     };
   },
 };

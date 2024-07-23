@@ -1,131 +1,59 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Oswald&family=Rowdies:wght@300&family=Ubuntu&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/quasar@2.15.2/dist/quasar.prod.css"
-      rel="stylesheet"
-    />
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com"> -->
-    <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
-    <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Iconsicon.style=Two+tone" rel="stylesheet" type="text/css"> -->
-    <script>
-=======
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/quasar@2.0.0-beta.9/dist/quasar.prod.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css2?family=Oswald&family=Rowdies:wght@300&family=Ubuntu&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/quasar@2.15.2/dist/quasar.prod.css" rel="stylesheet" type="text/css">
   <script>
->>>>>>> refs/remotes/origin/master
-      if (window.trustedTypes && window.trustedTypes.createPolicy) {
-        window.trustedTypes.createPolicy("default", {
-          createHTML: (string) => string,
-          createScriptURL: (string) => string,
-          createScript: (string) => string,
-        });
-      }
-    </script>
-    <title>Касса</title>
-  </head>
+    if (window.trustedTypes && window.trustedTypes.createPolicy) {
+    window.trustedTypes.createPolicy('default', {
+      createHTML: string => string,
+      createScriptURL: string => string,
+      createScript: string => string,
+    });
+  }
+  </script>
 
-  <style>
-    .backgrounddiv {
-      background: url("https://i.pinimg.com/564x/ca/7e/7e/ca7e7eac01733e100887d915420c36ee.jpg");
-      filter: blur(5px);
-      filter: brightness(40%);
-      background-size: cover;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
-  </style>
+  <title>Finance</title>
+</head>
+
+<body>
+  <div id="fin-app">Загрузка...</div>
 
   <script>
-<<<<<<< HEAD
-    // var model = JSON.parse(<?= getModel() ?>);
+    // var model = JSON.parse(<?= getModelFinance() ?>);
     var view = {};
-    // var spec = JSON.parse(<?= getSpec() ?>);
-=======
-    // var model = JSON.parse(<?= getModelFinance(Session.getActiveUser().getEmail()) ?>);
     // var view = JSON.parse(<?= getViewFinance() ?>);
->>>>>>> refs/remotes/origin/master
 
-    // function startJS(){
-    //   google.script.run.updateFilterCondition1();
-    // }
-
-    // function startJSs(){
-    //   google.script.run.updateFilterCondition2();
-    // }
-
-    function findAddressJS(address) {
-      google.script.run.findAddressGS(address);
-    }
-
-    function showAddressJS() {
-      google.script.run.withSuccessHandler(callbackF).showAddressGS();
-    }
-
-    function callbackF(address) {
-      model["Адрес объекта"].val = address;
+    //Не используется
+    function saveDataJS(){
+      google.script.run.saveDataGSFinance(JSON.stringify(model));
     }
   </script>
 
-<<<<<<< HEAD
-  <body>
-    <div id="app"></div>
-
-    <!-- Import Vue -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-
-    <!-- Import Quasar -->
-    <script src="https://cdn.jsdelivr.net/npm/quasar@2.15.2/dist/quasar.umd.prod.js"></script>
-
-    <!-- Import JS -->
-    <script src="./data.js"></script>
-
-    <!-- Import components -->
-    <!-- <?!= include("root.vue") ?> -->
-    <script src="./root.js"></script>
-
-    <script>
-      const vm = app.mount("#app");
-    </script>
-  </body>
-</html>
-=======
-  <!-- Import Vue -->
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-
+   <!-- Import Vue -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+  
   <!-- Import Quasar -->
-  <script src="https://cdn.jsdelivr.net/npm/quasar@2.0.0-beta.9/dist/quasar.umd.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quasar@2.15.2/dist/quasar.umd.prod.js"></script>
 
   <!-- Import JS -->
   <script src="./data.js"></script>
 
   <!-- Import components -->
+  <!-- <?!= include("root.js") ?> -->
   <script src="./root.js"></script>
-  
+
   <!-- Mount app -->
-  <script>const vm = app.mount('#fin-app')</script>
+  <script>
+    if (model) {
+      const vm = app.mount('#fin-app')
+    }else{
+      document.getElementById('fin-app').innerHTML = 'Кто ты, войн?'
+    }
+  </script>
 </body>
 </html>
->>>>>>> refs/remotes/origin/master
