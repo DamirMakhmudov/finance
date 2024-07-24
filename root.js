@@ -9,7 +9,7 @@ const {
   watchEffect,
   onBeforeUnmount,
 } = Vue;
-const { useQuasar, Loading, QSpinnerGears } = Quasar;
+const { useQuasar, Loading, QSpinnerGears, copyToClipboard } = Quasar;
 
 var vueObject = {
   name: "root",
@@ -19,6 +19,7 @@ var vueObject = {
   {{mega.user.val}}
 
   <div class="q-pa-md fit column justify-center">
+  <button @click="ttt()">click</button>
     <!-- first buttons -->
     <div class="q-gutter-y-xs" style="width:100%"> <!-- style="height:200px" -->
       
@@ -37,6 +38,15 @@ var vueObject = {
           <q-icon name="chat">
         </q-icon></template>
       </q-input>
+
+        <!-- Комментарии по объекту -->
+        <q-input label="Комментарии по объекту" use-input clearable v-model="mega.comment.val"
+        type="textarea"
+        >
+          <template v-slot:prepend>
+            <q-icon name="chat" @click="clip(mega.comment.val)" />
+          </template>
+        </q-input>
 
       <!-- sum -->
       <q-input v-model="mega.sum.val" label="Сумма" mask="# ### ### ###" reverse-fill-mask clearable>
@@ -136,23 +146,9 @@ var vueObject = {
   setup() {
     const $q = useQuasar();
     var showPaymentMethodTo = ref(false);
-    var megaview = ref(view);
-    var mmm = ref([
-      { label: 'One', value: 'one' },
-      { label: 'Two', value: 'two' },
-      { label: 'Three', value: 'three' }
-    ]);
-    // var megaview = reactive({
-    //   paymentMethodOptions: view.paymentMethodOptions,
-    //   paymentTypeOptions: view.paymentTypeOptions,
-    //   addressOptions: view.addressOptions,
-    //   cityOptions: view.cityOptions,
-    //   consumptionOptions: view.consumptionOptions.map(item => item.label),
-    //   userOptions: view.userOptions
-    // });
-
     var WEB_URL = "https://script.google.com/macros/s/AKfycbzbrg3TqpoBGvO_UETLBTiYV4mROjCYw0ehqmNMekC-ZD41BvCHiQqJ8DsN5PJkWwVx1w/exec";
-
+    
+    var megaview = ref(view);
     var mega = reactive({
       paymentMethod: model.paymentMethod,
       paymentMethodTo: model.paymentMethodTo,
@@ -217,21 +213,22 @@ var vueObject = {
       // sheetselected: computed(() => {return (mega.sheet.val != 'Менеджер.Архив') ? view.addressOptions : view.addressOptionsArchive}),
     });
 
-    function addData() {
-      l(megaview.value.paymentTypeOptions);
-      megaview.value.paymentTypeOptions = [
-        { label: 'a', value: 'a' },
-        { label: 'b', value: 'b' }
-      ]
-    }
-
     onBeforeMount(() => {
       l("onBeforeMount");
       getView();
     });
 
+    function ttt() {
+      megaview.value.userOptions = ['a', 'b']
+    }
+
     function l(text) {
       console.log(text);
+    }
+
+    function clip(text) {
+      copyToClipboard(text);
+      notify('Скопирован');
     }
 
     async function getView() {
@@ -261,7 +258,6 @@ var vueObject = {
         },
       }).then((resp) => resp.json());
       view = response;
-      l(view)
       megaview.value = response;
       $q.loading.hide();
     }
@@ -383,6 +379,19 @@ var vueObject = {
       mega.showmanager = mega.paymentType.val == "Бонус" ? true : false;
     }
 
+    function notify(text, type = 'positive') {
+      $q.notify({
+        message: text,
+        icon: 'announcement',
+        timeout: 10000,
+        type: type,
+        position: "top",
+        actions: [
+          { label: 'Закрыть', color: 'white', handler: () => { /* ... */ } }
+        ]
+      })
+    }
+
     async function saveData() {
       // model.mode = 'finance';
       model.sum.val = +model.sum.val.replace(/ /g, ""); //раскоментил
@@ -404,8 +413,7 @@ var vueObject = {
       showconsumptionFn();
       showaddressFn();
 
-      var url =
-        "https://script.google.com/macros/s/AKfycbzbrg3TqpoBGvO_UETLBTiYV4mROjCYw0ehqmNMekC-ZD41BvCHiQqJ8DsN5PJkWwVx1w/exec";
+      // var url = "https://script.google.com/macros/s/AKfycbzbrg3TqpoBGvO_UETLBTiYV4mROjCYw0ehqmNMekC-ZD41BvCHiQqJ8DsN5PJkWwVx1w/exec";
 
       const requestOptions = {
         method: "POST",
@@ -421,8 +429,7 @@ var vueObject = {
         },
         body: JSON.stringify(m2),
       };
-      console.log(m2);
-      let response = await fetch(url, requestOptions);
+      let response = await fetch(WEB_URL, requestOptions);
     }
 
     watch(
@@ -439,6 +446,7 @@ var vueObject = {
 
     return {
       mega,
+      notify,
       showPaymentMethodTo,
       megaview,
       getView,
@@ -454,8 +462,8 @@ var vueObject = {
       showPaymentMethodToFn,
       abortFilterFn,
       saveData,
-      addData,
-      mmm
+      clip,
+      ttt
     };
   },
 };
