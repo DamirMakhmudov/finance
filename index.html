@@ -1,59 +1,76 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald&family=Rowdies:wght@300&family=Ubuntu&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/quasar@2.15.2/dist/quasar.prod.css" rel="stylesheet" type="text/css">
-  <script>
-    if (window.trustedTypes && window.trustedTypes.createPolicy) {
-    window.trustedTypes.createPolicy('default', {
-      createHTML: string => string,
-      createScriptURL: string => string,
-      createScript: string => string,
-    });
-  }
-  </script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald&family=Rowdies:wght@300&family=Ubuntu&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/quasar@2.15.2/dist/quasar.prod.css"
+      rel="stylesheet"
+    />
+    <script>
+      if (window.trustedTypes && window.trustedTypes.createPolicy) {
+        window.trustedTypes.createPolicy("default", {
+          createHTML: (string) => string,
+          createScriptURL: (string) => string,
+          createScript: (string) => string,
+        });
+      }
+    </script>
 
-  <title>Finance</title>
-</head>
+    <title>Finance</title>
+  </head>
 
-<body>
-  <div id="fin-app">Загрузка...</div>
+  <body>
+    <div id="fin-app">Загрузка...</div>
 
-  <script>
-    // var model = JSON.parse(<?= getModelFinance() ?>);
-    var view = {};
-    // var view = JSON.parse(<?= getViewFinance() ?>);
+    <script>
+      // var model = JSON.parse(<?= getModelFinance() ?>); // раскоментить в gas
+      // var view = {};
+      // var view = JSON.parse(<?= getViewFinance() ?>); // раскоментить в gas
 
-    //Не используется
-    function saveDataJS(){
-      google.script.run.saveDataGSFinance(JSON.stringify(model));
-    }
-  </script>
+      //Не используется
+      function saveDataJS() {
+        google.script.run.saveDataGSFinance(JSON.stringify(model));
+      }
+    </script>
 
-   <!-- Import Vue -->
+    <!-- Import Vue -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script> -->
+
+    <!-- Import Quasar -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/quasar@2.15.2/dist/quasar.umd.prod.js"></script> -->
+
+  <!-- Import Vue -->
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-  
+
   <!-- Import Quasar -->
   <script src="https://cdn.jsdelivr.net/npm/quasar@2.15.2/dist/quasar.umd.prod.js"></script>
 
-  <!-- Import JS -->
-  <script src="./data.js"></script>
+    <!-- Import JS -->
+    <!-- Закоментить в gas-->
+    <script src="./data.js"></script>
 
-  <!-- Import components -->
-  <!-- <?!= include("root.js") ?> -->
-  <script src="./root.js"></script>
+    <!-- Import components -->
+    <!-- <?!= include("root.js") ?> -->
+    <script src="./root.js"></script>
 
-  <!-- Mount app -->
-  <script>
-    if (model) {
-      const vm = app.mount('#fin-app')
-    }else{
-      document.getElementById('fin-app').innerHTML = 'Кто ты, войн?'
-    }
-  </script>
-</body>
+    <!-- Mount app -->
+    <script>
+      if (model) {
+        const vm = app.mount("#fin-app");
+      } else {
+        document.getElementById("fin-app").innerHTML = "Кто ты, войн?";
+      }
+    </script>
+  </body>
 </html>
